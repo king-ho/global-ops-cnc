@@ -1,0 +1,831 @@
+config firewall policy
+    edit 1
+        set name "Anti-Lockout"
+        set uuid 0253e338-a4cd-51e8-0de3-1a036cfeb939
+        set srcintf "VPN"
+        set dstintf "SHIPNET"
+        set srcaddr "all"
+        set dstaddr "FGT-SHIPNET-ADDR"
+        set action accept
+        set schedule "always"
+        set service "VPN-SERVICES"
+        set logtraffic all
+        set fsso disable
+        set comments "Anti Lockout"
+    next
+    edit 2
+        set name "QNET-to-SHIPNET-MAIL"
+        set uuid 6f339158-43e0-51e9-c6e0-6502b64a957e
+        set srcintf "QNet"
+        set dstintf "SHIPNET"
+        set srcaddr "QNET-ADDR"
+        set dstaddr "EZ-MAIL-SERVER" "FGT-SHIPNET-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL_ICMP" "IMAP" "IMAPS" "SMTP" "SMTPS"
+        set logtraffic all
+        set fsso disable
+    next
+    edit 3
+        set name "SHIPNET-MAIL-to-QNET"
+        set uuid 6f35cdba-43e0-51e9-739f-342b8737092c
+        set srcintf "SHIPNET"
+        set dstintf "QNet"
+        set srcaddr "EZ-MAIL-SERVER" "FGT-SHIPNET-ADDR"
+        set dstaddr "QNET-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL_ICMP" "IMAP" "IMAPS" "SMTP" "SMTPS"
+        set logtraffic all
+        set fsso disable
+    next
+    edit 37
+        set name "RR to Qshare"
+        set uuid 9c4fc5ba-44d2-51e9-5e1b-a42d870fa81d
+        set srcintf "SHIPNET"
+        set dstintf "QNet"
+        set srcaddr "FGT-SHIPNET-ADDR" "RR3.myts.gl3" "RR4.myts.gl3" "nickGPI"
+        set dstaddr "qshare.myts.gl3" "popcorn.myts.gl3"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+        set fsso disable
+        set comments "Radio Room machines to Qshare"
+    next
+    edit 38
+        set name "Qshare to RR"
+        set uuid d9e9b8f4-44d2-51e9-2f6e-3d15544a442a
+        set srcintf "QNet"
+        set dstintf "SHIPNET"
+        set srcaddr "qshare.myts.gl3" "popcorn.myts.gl3"
+        set dstaddr "FGT-SHIPNET-ADDR" "RR3.myts.gl3" "RR4.myts.gl3" "nickGPI"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+        set fsso disable
+        set comments "Reverse of RR to Qshare"
+    next
+    edit 35
+        set name "SHIPNET-PRINTERS-to-QNET"
+        set uuid c0e868f6-44d1-51e9-51d0-fdcc3f3816db
+        set srcintf "SHIPNET"
+        set dstintf "QNet"
+        set srcaddr "FGT-SHIPNET-ADDR" "Printers"
+        set dstaddr "QNET-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL_ICMP" "ALL_TCP" "ALL_UDP"
+        set fsso disable
+        set comments "Allow access of the printers from QNET"
+    next
+    edit 36
+        set name "QNET-to-SHIPNET-PRINTERS"
+        set uuid 16369fbc-44d2-51e9-3d7e-e02a872e5e15
+        set srcintf "QNet"
+        set dstintf "SHIPNET"
+        set srcaddr "QNET-ADDR"
+        set dstaddr "FGT-SHIPNET-ADDR" "Printers"
+        set action accept
+        set schedule "always"
+        set service "ALL_ICMP" "ALL_TCP" "ALL_UDP"
+        set fsso disable
+        set comments "Allow access to Printers from QNET"
+    next
+    edit 57
+        set name "MEDIANET-via-VSAT-FX"
+        set uuid 5690b4e6-5533-51e9-ca4a-2ba14a323d63
+        set srcintf "MEDIANET"
+        set dstintf "WAN-VSAT-FX"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Enable this to use VSAT - MEDIANET via WIFI VSAT-FX"
+        set nat enable
+    next
+    edit 56
+        set name "MEDIANET-via-WiFi"
+        set uuid efdada88-5532-51e9-b19e-5762fcff5d03
+        set srcintf "MEDIANET"
+        set dstintf "WAN-WIFI"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Enable this to use VSAT - MEDIANET via WIFI"
+        set nat enable
+    next
+    edit 53
+        set name "MEDIANET-via-VSAT"
+        set uuid bc8dbcd6-4a1f-51e9-4526-2c132ea13e14
+        set srcintf "MEDIANET"
+        set dstintf "WAN-VSAT-KU"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+        set logtraffic all
+        set fsso disable
+        set comments "Enable this to use VSAT - MEDIANET via VSAT"
+        set ssl-ssh-profile "certificate-inspection"
+        set nat enable
+    next
+    edit 52
+        set name "MEDIANET-via-VPN"
+        set uuid 4c1ea1f4-4a1f-51e9-a2e3-a8e761da2608
+        set srcintf "MEDIANET"
+        set dstintf "VPN"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+        set fsso disable
+        set comments "Enable this to access Internet via VPN"
+        set nat enable
+    next
+    edit 55
+        set name "MEDIANET-via-3G"
+        set uuid 2eda5140-4cbf-51e9-5744-9c6b0090c530
+        set srcintf "MEDIANET"
+        set dstintf "WAN-3G"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Enable this to use VSAT - MEDIANET via 3G"
+        set nat enable
+    next
+    edit 51
+        set name "MEDIANET-via-4G"
+        set uuid bbcd53c8-48b3-51e9-bd1c-2e67d35d27e4
+        set srcintf "MEDIANET"
+        set dstintf "WAN-4G"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+        set fsso disable
+        set comments "Enable this to use 4G - MEDIANET via 4G"
+        set nat enable
+    next
+    edit 54
+        set name "MEDIANET-via-FBB"
+        set uuid 02bfe476-4cbf-51e9-58d9-69efd5878139
+        set srcintf "MEDIANET"
+        set dstintf "WAN-FBB"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Enable this to use VSAT - MEDIANET via FBB"
+        set nat enable
+    next
+    edit 39
+        set name "SHIPNET Watch to Qnet"
+        set uuid 4a18eb7c-4631-51e9-a69b-7e8bf3441c5a
+        set srcintf "SHIPNET"
+        set dstintf "QNet"
+        set srcaddr "FGT-SHIPNET-ADDR" "watch.myts.gl3"
+        set dstaddr "QNET-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL_ICMP" "ALL_TCP" "ALL_UDP"
+        set fsso disable
+        set comments "Watch access on Qnet"
+        set nat enable
+    next
+    edit 40
+        set name "Qnet to SHIPNET watch"
+        set uuid 964bbb46-4631-51e9-741f-7a0dbbab6872
+        set srcintf "QNet"
+        set dstintf "SHIPNET"
+        set srcaddr "QNET-ADDR"
+        set dstaddr "FGT-SHIPNET-ADDR" "watch.myts.gl3"
+        set action accept
+        set schedule "always"
+        set service "ALL_ICMP" "ALL_TCP" "ALL_UDP"
+        set fsso disable
+        set comments "Qnet to watch.myts.gl3"
+        set nat enable
+    next
+    edit 4
+        set name "DENY-QNET-to-GL4"
+        set uuid 6f37fe64-43e0-51e9-13a6-981af35ac366
+        set srcintf "QNet"
+        set dstintf "VPN"
+        set srcaddr "QNET-ADDR"
+        set dstaddr "GL4-ADDR"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic disable
+        set fsso disable
+        set comments "DENY QNET to GL4"
+    next
+    edit 13
+        set name "DENY-QNET-to-VSAT-Ku"
+        set uuid 6f497202-43e0-51e9-c81a-40780ab59e71
+        set srcintf "QNet"
+        set dstintf "WAN-VSAT-KU"
+        set srcaddr "all"
+        set dstaddr "WAN-VSAT-ADDR"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic disable
+        set fsso disable
+        set comments "DENY-QNET-to-VSAT Blocks access to Vsat Ku device"
+    next
+    edit 45
+        set name "DENY-QNET-to-VSAT-FX"
+        set uuid 9da5321a-48b0-51e9-1a18-ca06e10f6a8e
+        set srcintf "QNet"
+        set dstintf "WAN-VSAT-FX"
+        set srcaddr "all"
+        set dstaddr "WAN-VSAT-FX-ADDR"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic disable
+        set fsso disable
+        set comments "DENY-QNET-to-VSAT-FX blocks access to VSAT-FX device"
+    next
+    edit 46
+        set name "DENY-QNET-to-3G"
+        set uuid c72443ec-48b0-51e9-e1e5-f29b5d5fe86b
+        set srcintf "QNet"
+        set dstintf "WAN-3G"
+        set srcaddr "all"
+        set dstaddr "WAN-3G-ADDR"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic disable
+        set fsso disable
+        set comments "DENY-QNET-to-3G Blocks access to the 3G device"
+    next
+    edit 14
+        set name "DENY-QNET-to-4G"
+        set uuid 6f4b40a0-43e0-51e9-4fe1-4fceb85378fe
+        set srcintf "QNet"
+        set dstintf "WAN-4G"
+        set srcaddr "all"
+        set dstaddr "WAN-4G-ADDR"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic disable
+        set fsso disable
+        set comments "DENY-QNET to WAN Blocks access to the 4G device"
+    next
+    edit 50
+        set name "DENY-QNET-to-WiFi"
+        set uuid 23905d6c-48b3-51e9-95b4-f7bd0dd0e8e9
+        set srcintf "QNet"
+        set dstintf "WAN-WIFI"
+        set srcaddr "all"
+        set dstaddr "WAN-WIFI-ADDR"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic disable
+        set fsso disable
+        set comments "DENY-QNET-to-WiFi Blocks access to the WiFi device"
+    next
+    edit 47
+        set name "DENY-QNET-to-IridiumCertus"
+        set uuid 2b413542-48b1-51e9-c601-915eceed8042
+        set srcintf "QNet"
+        set dstintf "WAN-IridiumCertus"
+        set srcaddr "all"
+        set dstaddr "WAN-IRIDIUM-CERTUS-ADDR"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic disable
+        set fsso disable
+        set comments "DENY-QNET-to-IridiumCertus Blocks access to Iridium Certus device"
+    next
+    edit 48
+        set name "DENY-QNET-to-IridiumPilot"
+        set uuid 8a0a4898-48b1-51e9-0b04-1c81a8ac7417
+        set srcintf "QNet"
+        set dstintf "WAN-IridiumPilot"
+        set srcaddr "all"
+        set dstaddr "WAN-IRIDIUM-PILOT-ADDR"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic disable
+        set fsso disable
+        set comments "DENY-QNET-to-Iridium-Pilot Blocks access to Iridium Pilot decvice"
+    next
+    edit 49
+        set name "DENY-QNET-to-FBB"
+        set uuid d18b6a62-48b1-51e9-3a59-4ee3f78d658a
+        set srcintf "QNet"
+        set dstintf "WAN-FBB"
+        set srcaddr "all"
+        set dstaddr "WAN-FBB-ADDR"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic disable
+        set fsso disable
+        set comments "DENY-QNET-to-FBB Blocks access to FBB device"
+    next
+    edit 5
+        set name "SHIPNET-to-VSAT-Ku"
+        set uuid 6f39c140-43e0-51e9-c50e-7e491ff78628
+        set srcintf "SHIPNET"
+        set dstintf "WAN-VSAT-KU"
+        set srcaddr "all"
+        set dstaddr "WAN-VSAT-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set nat enable
+    next
+    edit 60
+        set name "SHIPNET-to-VSAT-Ku - draytek"
+        set uuid 4460f076-6657-51e9-3663-8c553b00a9ed
+        set srcintf "SHIPNET"
+        set dstintf "WAN-VSAT-KU"
+        set srcaddr "all"
+        set dstaddr "WAN-VSATKU-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "SHIPNET-to-VSAT-Ku Draytek modem"
+        set nat enable
+    next
+    edit 58
+        set name "SHIPNET-to-GL3Direct"
+        set uuid a81a00e2-62b7-51e9-48da-cf8f01a4e5be
+        set srcintf "SHIPNET"
+        set dstintf "WAN-GL3Direct"
+        set srcaddr "all"
+        set dstaddr "WAN-GL3Direct-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "SHIPNET-to-GL3Direct"
+        set nat enable
+    next
+    edit 42
+        set name "SHIPNET-to-VSAT-FX"
+        set uuid 52e4c21c-47fd-51e9-210e-6f3354021366
+        set srcintf "SHIPNET"
+        set dstintf "WAN-VSAT-FX"
+        set srcaddr "all"
+        set dstaddr "WAN-VSAT-FX-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "SHIPNET-to-VSAT-FX"
+        set nat enable
+    next
+    edit 8
+        set name "SHIPNET-to-3G"
+        set uuid 6f3f5c86-43e0-51e9-6215-eaacfa2679c8
+        set srcintf "SHIPNET"
+        set dstintf "WAN-3G"
+        set srcaddr "all"
+        set dstaddr "WAN-3G-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set nat enable
+    next
+    edit 6
+        set name "SHIPNET-to-4G"
+        set uuid 6f3b97ea-43e0-51e9-aeb1-be7c2d6111bb
+        set srcintf "SHIPNET"
+        set dstintf "WAN-4G"
+        set srcaddr "all"
+        set dstaddr "WAN-4G-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Shipnet to 4G"
+        set nat enable
+    next
+    edit 43
+        set name "SHIPNET-to-Iridium-Certus"
+        set uuid 41b316a0-47fe-51e9-7873-291712f27b6b
+        set srcintf "SHIPNET"
+        set dstintf "WAN-IridiumCertus"
+        set srcaddr "all"
+        set dstaddr "WAN-IRIDIUM-CERTUS-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "SHIPNET-to-Iridium-Certus"
+        set nat enable
+    next
+    edit 44
+        set name "SHIPNET-to-Iridium-Pilot"
+        set uuid 19c4c4c2-48ad-51e9-9d64-12a265fd0644
+        set srcintf "SHIPNET"
+        set dstintf "WAN-IridiumPilot"
+        set srcaddr "all"
+        set dstaddr "WAN-IRIDIUM-PILOT-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "SHIPNET-to-Iridium-Pilot"
+        set nat enable
+    next
+    edit 7
+        set name "SHIPNET-to-FBB"
+        set uuid 6f3d7bb4-43e0-51e9-3db6-248b62afd271
+        set srcintf "SHIPNET"
+        set dstintf "WAN-FBB"
+        set srcaddr "all"
+        set dstaddr "WAN-FBB-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set nat enable
+    next
+    edit 9
+        set name "SHIPNET-to-WIFI"
+        set uuid 6f413808-43e0-51e9-6a25-de529eb8aa5c
+        set srcintf "SHIPNET"
+        set dstintf "WAN-WIFI"
+        set srcaddr "all"
+        set dstaddr "WAN-WIFI-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set nat enable
+    next
+    edit 11
+        set name "SHIPNET to vsat network"
+        set uuid 6f44f24a-43e0-51e9-77d6-7c1e9b9425eb
+        set srcintf "SHIPNET"
+        set dstintf "vsat-network"
+        set srcaddr "all"
+        set dstaddr "WAN-vsat-net-ADDR"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "SHIPNET-to-vsat-network"
+        set nat enable
+    next
+    edit 16
+        set name "MAIL-SHIPS-TO-SHORE"
+        set uuid 6f4f0bfe-43e0-51e9-7c74-1367e4594bb9
+        set srcintf "SHIPNET"
+        set dstintf "VPN"
+        set srcaddr "EZ-MAIL-SERVER"
+        set dstaddr "SHORE-MAIL-SERVER"
+        set action accept
+        set schedule "always"
+        set service "EZ-MAIL-SERVICES"
+        set fsso disable
+    next
+    edit 17
+        set name "MAIL-SHORE-TO-SHIPS"
+        set uuid 6f50da56-43e0-51e9-f7f4-87d9210f34b8
+        set srcintf "VPN"
+        set dstintf "SHIPNET"
+        set srcaddr "SHORE-MAIL-SERVER"
+        set dstaddr "EZ-MAIL-SERVER"
+        set action accept
+        set schedule "always"
+        set service "EZ-MAIL-SERVICES"
+        set fsso disable
+        set comments "MAIL-SHIPS-TO-SHORE"
+    next
+    edit 18
+        set name "updates.regs4ships.com"
+        set uuid 6f52bbbe-43e0-51e9-8822-9a8410746326
+        set srcintf "SHIPNET"
+        set dstintf "VPN"
+        set srcaddr "Ulysess Server" "wts.myts.gl3"
+        set dstaddr "updates.regs4ships.com server"
+        set action accept
+        set schedule "always"
+        set service "updates.regs4ships.com ports"
+        set fsso disable
+        set comments "updates.reg4ships.com"
+    next
+    edit 30
+        set name "SHIPNET-TO-Voyager"
+        set uuid d01925d6-44cc-51e9-4718-0afb8a77719d
+        set srcintf "SHIPNET"
+        set dstintf "VPN"
+        set srcaddr "SHIPNET-DEVICES"
+        set dstaddr "FTP ukho.gov.uk" "UKHO Admiralty Gateway"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Voyager updates"
+    next
+    edit 31
+        set name "Voyager-TO-SHIPNET"
+        set uuid 726701dc-44cd-51e9-49cb-d5ae9884c08e
+        set srcintf "VPN"
+        set dstintf "SHIPNET"
+        set srcaddr "FTP ukho.gov.uk" "UKHO Admiralty Gateway"
+        set dstaddr "SHIPNET-DEVICES"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Reverse of Voyager"
+    next
+    edit 33
+        set name "Sena to GL3"
+        set uuid 6552283a-44cf-51e9-92ce-3bb6c5fb833e
+        set srcintf "SHIPNET"
+        set dstintf "VPN"
+        set srcaddr "sena.myts.gl3"
+        set dstaddr "GL4-ADDR"
+        set action accept
+        set schedule "always"
+        set service "SenaGPS"
+        set fsso disable
+        set comments "SerialGPS to GL3"
+        set nat enable
+    next
+    edit 34
+        set name "GL3 to sena"
+        set uuid 94acdbd8-44d0-51e9-cad7-efe2d9576ca0
+        set srcintf "VPN"
+        set dstintf "SHIPNET"
+        set srcaddr "GL4-ADDR"
+        set dstaddr "sena.myts.gl3"
+        set action accept
+        set schedule "always"
+        set service "SenaGPS"
+        set fsso disable
+        set comments "GL3 to Serial server"
+        set nat enable
+    next
+    edit 19
+        set name "AIS traffic to Marine Traffic"
+        set uuid 6f549ab0-43e0-51e9-b3d9-f63b5d5c6cf8
+        set srcintf "SHIPNET"
+        set dstintf "VPN"
+        set srcaddr "wts.myts.gl3"
+        set dstaddr "Marine Traffic"
+        set action accept
+        set schedule "always"
+        set service "Marine Traffic Port for AS"
+        set fsso disable
+        set comments "AIS traffic to Marine Traffic"
+    next
+    edit 20
+        set name "VIP-to-VPN"
+        set uuid 6f566f3e-43e0-51e9-8f2f-081d3652c53a
+        set srcintf "SHIPNET"
+        set dstintf "VPN"
+        set srcaddr "VIP-GROUP"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "VPN-SERVICES"
+        set logtraffic all
+        set fsso disable
+        set comments "VIP-ShipNet-TO-VPN"
+    next
+    edit 21
+        set name "VPN-to-VIP"
+        set uuid 6f586bea-43e0-51e9-48cf-aa92302a15b7
+        set srcintf "VPN"
+        set dstintf "SHIPNET"
+        set srcaddr "all"
+        set dstaddr "VIP-GROUP"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "VPN-SERVICES"
+        set logtraffic all
+        set fsso disable
+        set comments "VPN-TO-ShipNet VIP"
+    next
+    edit 22
+        set name "ShipNet-TO-VPN"
+        set uuid 6f5a712e-43e0-51e9-5b74-646450224faf
+        set srcintf "SHIPNET"
+        set dstintf "VPN"
+        set srcaddr "SHIPNET-DEVICES"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "VPN-SERVICES"
+        set utm-status enable
+        set logtraffic all
+        set fsso disable
+        set ssl-ssh-profile "certificate-inspection-noSSH"
+    next
+    edit 23
+        set name "VPN-TO-ShipNet"
+        set uuid 6f5d1dc0-43e0-51e9-49e1-e2d87d6a6b4e
+        set srcintf "VPN"
+        set dstintf "SHIPNET"
+        set srcaddr "all"
+        set dstaddr "SHIPNET-DEVICES"
+        set action accept
+        set schedule "always"
+        set service "VPN-SERVICES"
+        set utm-status enable
+        set logtraffic all
+        set fsso disable
+        set comments "INSIDE-to-OUTSIDE"
+        set ssl-ssh-profile "certificate-inspection-noSSH"
+    next
+    edit 32
+        set name "QNET-VIP-TO-VSAT-FX"
+        set uuid 69bc4adc-44ce-51e9-329a-4f80f69e3036
+        set srcintf "QNet"
+        set dstintf "WAN-VSAT-FX"
+        set srcaddr "QNET-VIP-GROUP" "Emili android-fb78f2d3a54090e1"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Qnet VIP access edit QNET VIP group to allow devices"
+        set nat enable
+    next
+    edit 59
+        set name "QNET-VIP-TO-4G"
+        set uuid b8cbfe6e-59f6-51e9-3e65-82eca23df3c6
+        set srcintf "QNet"
+        set dstintf "WAN-4G"
+        set srcaddr "Chart Tablet" "mong-phone"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Clone of QNET-VIP-TO-VSAT-KU"
+        set nat enable
+    next
+    edit 24
+        set name "QNET-via-4G"
+        set uuid 6f5fd1e6-43e0-51e9-8ec1-68fa98febcc9
+        set srcintf "QNet"
+        set dstintf "WAN-4G"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+        set logtraffic all
+        set fsso disable
+        set comments "Enable this to use 4G - QNET via 4G"
+        set webfilter-profile "QNET - Standard"
+        set dnsfilter-profile "QNET - Standard"
+        set application-list "QNET - Standard"
+        set ssl-ssh-profile "certificate-inspection-noSSH"
+        set nat enable
+    next
+    edit 25
+        set name "QNET-via-VPN"
+        set uuid 6f61cfaa-43e0-51e9-3146-d887394b8922
+        set srcintf "QNet"
+        set dstintf "VPN"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+        set fsso disable
+        set comments "Enable this to access Internet via VPN"
+        set webfilter-profile "QNET - Standard"
+        set dnsfilter-profile "QNET - Standard"
+        set application-list "QNET - Standard"
+        set ssl-ssh-profile "certificate-inspection-noSSH"
+        set nat enable
+    next
+    edit 26
+        set name "QNET-via-VSAT"
+        set uuid 6f63b9c8-43e0-51e9-4748-8db5b46e9af5
+        set srcintf "QNet"
+        set dstintf "WAN-VSAT-KU"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+        set fsso disable
+        set comments "Enable this to use VSAT - QNET via VSAT"
+        set webfilter-profile "QNET - Relaxed"
+        set dnsfilter-profile "QNET - Standard"
+        set application-list "QNET - Standard"
+        set ssl-ssh-profile "certificate-inspection-noSSH"
+        set nat enable
+    next
+    edit 41
+        set name "QNET-via-VSAT-FX"
+        set uuid 06e3d8ee-47fd-51e9-c5ce-7f9fd3f42465
+        set srcintf "QNet"
+        set dstintf "WAN-VSAT-FX"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+        set fsso disable
+        set comments "QNET-via-VSAT-FX"
+        set webfilter-profile "QNET - Standard"
+        set dnsfilter-profile "QNET - Standard"
+        set application-list "QNET - Standard"
+        set ssl-ssh-profile "certificate-inspection-noSSH"
+        set nat enable
+    next
+    edit 27
+        set name "QNET-via-FBB"
+        set uuid 6f662398-43e0-51e9-c6a2-869f0b5bcd42
+        set srcintf "QNet"
+        set dstintf "WAN-FBB"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+        set fsso disable
+        set comments "Enable this to use VSAT - QNET via FBB"
+        set webfilter-profile "QNET - Standard"
+        set dnsfilter-profile "QNET - Standard"
+        set application-list "QNET - Standard"
+        set ssl-ssh-profile "certificate-inspection-noSSH"
+        set nat enable
+    next
+    edit 28
+        set name "QNET-via-3G"
+        set uuid 6f6814c8-43e0-51e9-b46d-cf5d1d69cb25
+        set srcintf "QNet"
+        set dstintf "WAN-3G"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+        set fsso disable
+        set comments "Enable this to use VSAT - QNET via 3G"
+        set webfilter-profile "QNET - Standard"
+        set dnsfilter-profile "QNET - Standard"
+        set application-list "QNET - Standard"
+        set ssl-ssh-profile "certificate-inspection-noSSH"
+        set nat enable
+    next
+    edit 29
+        set name "QNET-via-WiFi"
+        set uuid 6f6a08be-43e0-51e9-59c4-22fdfd936a26
+        set srcintf "QNet"
+        set dstintf "WAN-WIFI"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set status disable
+        set schedule "always"
+        set service "ALL"
+        set fsso disable
+        set comments "Enable this to use VSAT - QNET via WIFI 102"
+        set nat enable
+    next
+end

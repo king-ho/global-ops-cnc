@@ -1,0 +1,9 @@
+{
+  "cam1":"192.168.xx.xx",
+  "cam2":"192.168.xx.xx",
+  "mail":"192.168.xx.xx",
+  "driveapi":"xxx",
+  "drovecert":{},
+  "password":"",
+  "port":8080
+}

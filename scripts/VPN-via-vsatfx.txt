@@ -1,0 +1,8 @@
+#for VPN gateway, we only need to change 1 section in ipsec phase1-interface
+#verify interface naming via : show system interface (samples shown at system-interface.txt)
+===========
+config vpn ipsec phase1-interface
+    edit "EMEA"
+        set interface "VSAT-FX"
+    next
+end

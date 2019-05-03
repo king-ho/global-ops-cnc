@@ -1,0 +1,30 @@
+config system interface
+   edit "VSAT"
+        set description "VSAT vlan"
+        set alias "VSAT-Ku"
+    next
+    edit "4G"
+        set description "4G vlan"
+        set interface "wan"
+    next
+    edit "FBB"
+        set alias "FBB"
+        set interface "wan"
+    next
+    edit "3G"
+        set description "3G"
+        set alias "3G"
+        set interface "wan"
+    next
+    edit "WiFi"
+        set description "Mast WiFi-102"
+        set alias "WiFi"
+        set interface "wan"
+    next
+    edit "VSAT-FX"
+        set description "VSAT FX Sigma device"
+        set alias "VSAT-FX"
+        set interface "wan"
+    next 
+end
+

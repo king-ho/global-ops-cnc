@@ -1,0 +1,184 @@
+config router policy
+    edit 18
+        set src "192.168.214.0/255.255.255.0"
+        set dst "172.25.214.0/255.255.255.0"
+        set gateway 172.25.214.254
+        set output-device "VSAT-FX"
+        set comments "WAN-VSAT-FX"
+    next
+    edit 31
+        set src "192.168.214.0/255.255.255.0"
+        set dst "172.20.214.0/255.255.255.0"
+        set gateway 172.20.214.254
+        set output-device "VSAT"
+        set comments "WAN-VSAT-Draytek"
+    next
+    edit 30
+        set src "192.168.214.0/255.255.255.0"
+        set dst "192.168.200.0/255.255.252.0"
+        set gateway 192.168.200.7
+        set output-device "GL3Direct"
+        set comments "WAN-VSAT"
+    next
+    edit 15
+        set src "192.168.214.0/255.255.255.0"
+        set dst "172.23.214.0/255.255.255.0"
+        set gateway 172.23.214.254
+        set output-device "3G"
+        set comments "WAN-3G"
+    next
+    edit 4
+        set src "192.168.214.0/255.255.255.0"
+        set dst "172.21.214.0/255.255.255.0"
+        set gateway 172.21.214.254
+        set output-device "4G"
+        set comments "WAN-4G"
+    next
+    edit 16
+        set src "192.168.214.0/255.255.255.0"
+        set dst "172.24.214.0/255.255.255.0"
+        set gateway 172.24.214.254
+        set output-device "WiFi"
+        set comments "WAN-WiFi"
+    next
+    edit 17
+        set src "192.168.214.0/255.255.255.0"
+        set dst "172.26.214.0/255.255.255.0"
+        set gateway 172.26.214.254
+        set output-device "IridiumCertus"
+        set comments "WAN-IridiumCertus"
+    next
+    edit 21
+        set src "192.168.214.0/255.255.255.0"
+        set dst "172.27.214.0/255.255.255.0"
+        set gateway 172.27.214.254
+        set output-device "IridiumPilot"
+        set comments "WAN-IridiumPilot"
+    next
+    edit 14
+        set src "192.168.214.0/255.255.255.0"
+        set dst "172.22.214.0/255.255.255.0"
+        set gateway 172.22.214.254
+        set output-device "FBB"
+        set comments "WAN-FBB"
+    next
+    edit 19
+        set src "192.168.214.0/255.255.255.0"
+        set dst "192.168.10.0/255.255.255.0"
+        set gateway 192.168.10.1
+        set output-device "vsat-network"
+        set comments "vsat network"
+    next
+    edit 5
+        set src "192.168.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set gateway 10.20.0.1
+        set comments "Shipnet via EMEA"
+    next
+    edit 1
+        set src "172.16.214.0/255.255.255.0"
+        set dst "192.168.214.0/255.255.255.0"
+        set output-device "lan"
+        set comments "QNET-to-TS-MAIL"
+    next
+    edit 7
+        set src "172.16.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set gateway 10.20.0.1
+        set status disable
+        set comments "QNET via VPN - Disable this policy when not wanting to go via VPN"
+    next
+    edit 8
+        set src "172.16.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set output-device "VSAT"
+        set status disable
+        set comments "QNET via VsatKu- Disable this policy when not on Vsat"
+    next
+    edit 22
+        set src "172.16.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set output-device "VSAT-FX"
+        set status disable
+        set comments "QNET via VsatFX- Disable this policy when not on Vsat"
+    next
+    edit 10
+        set src "172.16.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set output-device "3G"
+        set status disable
+        set comments "QNET via 3G - Disable this policy when not on 3G"
+    next
+    edit 20
+        set src "172.16.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set output-device "WiFi"
+        set status disable
+        set comments "QNET via WIFI- Disable this policy when not on WIFI"
+    next
+    edit 6
+        set src "172.16.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set output-device "4G"
+        set comments "QNET via 4G - Disable this policy when not on 4G"
+    next
+    edit 9
+        set src "172.16.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set output-device "FBB"
+        set status disable
+        set comments "QNET via FBB - Disable this policy when not on FBB"
+    next
+    edit 23
+        set src "172.17.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set gateway 172.27.214.254
+        set output-device "4G"
+        set status disable
+        set comments "MEDIANET via 4G - Disable this policy when not on 4G"
+    next
+    edit 24
+        set src "172.17.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set gateway 172.30.30.1
+        set output-device "VSAT-FX"
+        set status disable
+        set comments "MEDIANET via Vsat-FX - Disable this policy when not on Vsat"
+    next
+    edit 25
+        set src "172.17.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set gateway 10.20.0.1
+        set output-device "EMEA"
+        set status disable
+        set comments "MEDIANET via VPN - Disable this policy when not wanting to go via VPN"
+    next
+    edit 26
+        set src "172.17.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set output-device "FBB"
+        set status disable
+        set comments "MEDIANET via FBB - Disable this policy when not on FBB"
+    next
+    edit 27
+        set src "172.17.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set output-device "3G"
+        set status disable
+        set comments "MEDIANET via 3G - Disable this policy when not on 3G"
+    next
+    edit 28
+        set src "172.17.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set gateway 172.24.214.254
+        set output-device "WiFi"
+        set comments "MEDIANET via WiFi - Disable this policy when not on WiFi"
+    next
+    edit 29
+        set src "172.17.214.0/255.255.255.0"
+        set dst "0.0.0.0/0.0.0.0"
+        set output-device "VSAT"
+        set status disable
+        set comments "MEDIANET via Vsat - Disable this policy when not on Vsat"
+    next
+end

@@ -1,0 +1,59 @@
+==QNET via VSAT-FX
+config router policy
+    edit 20
+        set status disable
+        set comments "QNET via WIFI- Disable this policy when not on WIFI"
+    next
+    edit 17
+        set comments "QNET via VSAT-FX - Disable this policy when not on WIFI"
+    next
+end
+
+config firewall policy
+    edit 42
+        set comments "QNET-via-VSAT-FX"
+    next
+    edit 29
+        set comments "Enable this to use - QNET via WIFI 102"
+    next
+end
+
+==QNET via Wifi
+config router policy
+    edit 20
+        set status enable
+        set comments "QNET via WIFI- Disable this policy when not on WIFI"
+    next
+    edit 17
+        set status disable
+        set comments "QNET via VSAT-FX - Disable this policy when not on WIFI"
+    next
+end
+
+config firewall policy
+    edit 42
+        set status disable
+        set comments "QNET-via-VSAT-FX"
+    next
+    edit 29
+        set status enable
+        set comments "Enable this to use - QNET via WIFI 102"
+    next
+end
+
+====VPN gw change : verify interface naming via : show system interface
+##via VSAT
+config vpn ipsec phase1-interface
+    edit "EMEA"
+        set interface "VSAT"
+    next
+end
+
+##via VSAT-FX
+config vpn ipsec phase1-interface
+    edit "EMEA"
+        set interface "VSAT-FX"
+    next
+end
+
+
