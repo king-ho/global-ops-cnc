@@ -18,7 +18,7 @@ var request = require("request").defaults({
 let fgip = ''
 let fguser = ''
 let fgpass = ''
-let mailurl = '' // including https:// eg "https://mailscanner.emea.gl3/"
+let mailurl = '' // including https:// git ieg "https://mailscanner.emea.gl3/"
 let mailuser = ''
 let mailpass = ''
 
