@@ -33,6 +33,13 @@ Webcam management = selects which camera to Sync
     let gateways
     let target
     jQuery(document).ready(function() {
+      $("#config").click(function(){
+        console.log("config clicked")
+        $("#configwindow").fadeIn()
+      })
+      $("#configwindowclosebutton").click(function(){
+        $("#configwindow").fadeOut()
+      })
       //get firewallpolicy
       $.get( "/getfirewallpolicy",function(currentfirewalldata){
         if(typeof currentfirewalldata == "object"){
@@ -218,6 +225,9 @@ Webcam management = selects which camera to Sync
       }
     }
   }
+  window.addEventListener("hashchange", function () {
+    window.scrollTo(window.scrollX, window.scrollY- 48);
+});
   </script>
   <meta charset="utf-8">
   <link rel="stylesheet" href="./css/pure-min.css">
@@ -318,11 +328,59 @@ box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
       height:40px;
       line-height:40px;
     }
+    .navbar {
+      overflow: hidden;
+      background-color: #333;
+      position: fixed; /* Set the navbar to fixed position */
+      top: 0; /* Position the navbar at the top of the page */
+      width: 100%; /* Full width */
+      z-index:1;
+    }/* Links inside the navbar */
+    .navbar a {
+      float: right;
+      display: block;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+    /* Change background on mouse-over */
+    .navbar a:hover {
+      background: #ddd;
+      color: black;
+    }
+    .gatewayfs{
+      margin-top:48px
+    }
+    #configwindow{
+      color:white;
+      display:none;
+      overflow: hidden;
+      background-color: rgba(0,0,0,0.8);
+      position: fixed; /* Set the navbar to fixed position */
+      top: 0; /* Position the navbar at the top of the page */
+      width: 100%; /* Full width */
+      height: 100%;
+      z-index:2;
+    }
   </style>
 </head>
 
 <body>
-  <fieldset class="gatewayfs">
+  <div id="configwindow">
+    <div style="position:absolute;right:5px;top:5px"><i id="configwindowclosebutton" style="font-size:48px;cursor:pointer" class="material-icons">close</i></div>
+    <div id="configdisplayer">
+      
+    </div>
+  </div>
+  <div class="navbar">
+  <a id="config"><i class="material-icons">settings</i></a>
+  <a href="#webcams">cams</a>
+  <a href="#syncs">syncs</a>
+  <a href="#mailscanner">mail</a>
+  <a href="#gatewayfs">gateways</a>
+</div>
+  <fieldset id="gatewayfs" class="gatewayfs">
     <div class="fstitle">
       Gateway <span id="gwloader"> - loading</span>
     </div><br>
@@ -338,7 +396,7 @@ box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
   </fieldset>
   <fieldset style="height:400px;overflow:scroll">
 
-    <div class="fstitle">
+    <div id="mailscanner" class="fstitle">
       Mail <span id="mailloader"> - loading</span>
     </div><br>
     <div style="margin:0;margin-top:30px" class="inner">
@@ -361,7 +419,7 @@ box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
     </div>
 
   </fieldset>
-  <fieldset class="fiddy">
+  <fieldset id="syncs" class="fiddy">
     <div class="fstitle">
       Manual Sync
     </div><br>
@@ -373,7 +431,7 @@ box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
       <button  style="flex: 1;" class="cammanual pure-button">Webcam Sync</button>
     </div>
   </fieldset>
-  <fieldset class="fiddy">
+  <fieldset id="webcams" class="fiddy">
     <div class="fstitle">
       Webcam Previews
     </div><br>
