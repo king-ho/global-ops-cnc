@@ -199,6 +199,7 @@ app.get('/getfirewallpolicy', function(req, res) {
  * @return {string}     String
  */
 app.get('/getrouterpolicy', function(req, res) {
+  console.log("connecting to " + fgip + " as " + fguser)
   ssh.connect({
     host: fgip,
     username: fguser,
