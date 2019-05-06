@@ -280,9 +280,10 @@ app.get('/refreshmail', function(req, res) {
         })
         console.log("we need to load " + expectedpages + " pages containing " + nummails + " mails")
         //replace from here with calls to every url in the dateslist
+        retmails = []
         for (var j = 0; j < dateslist.length; j++) {
           for( var q = 0 ; q < dateslist[j].url.length ; q++){
-            console.log(dateslist[j].url)
+            //console.log(dateslist[j].url)
             request({
               url: baseurl + "/" + dateslist[j].url
             }, function(error, response, body) {
