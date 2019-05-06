@@ -16,8 +16,8 @@ var request = require("request").defaults({
 });
 
 // Set details for fortigate and mailwatcher here
-let rawdata = fs.readFileSync('/opt/global-ops-cnc/settings.json');
-let student = JSON.parse(rawdata);
+let rawdata = fs.readFileSync('settings.json');
+rawdata = JSON.parse(rawdata);
 let fgip = rawdata.fgip
 let fguser = rawdata.fguser
 let fgpass = rawdata.fgpass
@@ -172,6 +172,7 @@ app.get('/networks', function(req, res) {
  * @return {string}     String
  */
 app.get('/getfirewallpolicy', function(req, res) {
+  console.log("connecting to " + fgip + " as " + fguser)
   ssh.connect({
     host: fgip,
     username: fguser,

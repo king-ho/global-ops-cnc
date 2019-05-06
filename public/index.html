@@ -35,30 +35,35 @@ Webcam management = selects which camera to Sync
     jQuery(document).ready(function() {
       //get firewallpolicy
       $.get( "/getfirewallpolicy",function(currentfirewalldata){
-        $.get("/networks",function(networkdata){
-          for(var i = 0 ; i < networkdata.QNET.networks.length; i++){
-            for(var cur in currentfirewalldata) {
-              if(networkdata.QNET.networks[i].firewallpolicy == cur){
-                //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
-                if (currentfirewalldata[cur].status == undefined){
-                  $(".QNET").attr("gateway",networkdata.QNET.networks[i].name)
-                  drawLine("QNET")
+        if(currentfirewalldata.indexOf("Error running show router policy") == -1){
+          $.get("/networks",function(networkdata){
+            console.log(currentfirewalldata)
+            for(var i = 0 ; i < networkdata.QNET.networks.length; i++){
+              for(var cur in currentfirewalldata) {
+                if(networkdata.QNET.networks[i].firewallpolicy == cur){
+                  //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
+                  if (currentfirewalldata[cur].status == undefined){
+                    $(".QNET").attr("gateway",networkdata.QNET.networks[i].name)
+                    drawLine("QNET")
+                  }
                 }
               }
             }
-          }
-          for(var i = 0 ; i < networkdata.MEDIANET.networks.length; i++){
-            for(var cur in currentfirewalldata) {
-              if(networkdata.MEDIANET.networks[i].firewallpolicy == cur){
-                //console.log("network firewallpolicy id for MEDIANET " + networkdata.MEDIANET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
-                if (currentfirewalldata[cur].status == undefined){
-                  $(".MEDIANET").attr("gateway",networkdata.MEDIANET.networks[i].name)
-                  drawLine("MEDIANET")
+            for(var i = 0 ; i < networkdata.MEDIANET.networks.length; i++){
+              for(var cur in currentfirewalldata) {
+                if(networkdata.MEDIANET.networks[i].firewallpolicy == cur){
+                  //console.log("network firewallpolicy id for MEDIANET " + networkdata.MEDIANET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
+                  if (currentfirewalldata[cur].status == undefined){
+                    $(".MEDIANET").attr("gateway",networkdata.MEDIANET.networks[i].name)
+                    drawLine("MEDIANET")
+                  }
                 }
               }
             }
-          }
-        })
+          })
+        } else {
+          console.log("could not get current firewalldata")
+        }
       })
 
       $.get( "/refreshmail",function(refreshdata){
@@ -117,15 +122,18 @@ Webcam management = selects which camera to Sync
 
     function drawLine(network){
       let gateway = $("."+network).attr("gateway")
-      d3.select("."+network+"_line").remove()
-      var line = svgContainer.append("line")
-        .attr("x1", $("."+network).offset().left+$("."+network).width()/2+20)
-        .attr("y1", $("."+network).offset().top+$("."+network).height()+20)
-        .attr("x2", $("."+gateway).offset().left+$("."+gateway).width()/2+20)
-        .attr("y2", $("."+gateway).offset().top)
-        .attr("stroke-width", 2)
-        .attr("stroke", "black")
-        .attr("class",network+"_line lern")
+      console.log(network + " - " + gateway)
+      if(gateway != ""){
+        d3.select("."+network+"_line").remove()
+        var line = svgContainer.append("line")
+          .attr("x1", $("."+network).offset().left+$("."+network).width()/2+20)
+          .attr("y1", $("."+network).offset().top+$("."+network).height()+20)
+          .attr("x2", $("."+gateway).offset().left+$("."+gateway).width()/2+20)
+          .attr("y2", $("."+gateway).offset().top)
+          .attr("stroke-width", 2)
+          .attr("stroke", "black")
+          .attr("class",network+"_line lern")
+      }
     }
     var resizeTimer;
     function getmails(){
