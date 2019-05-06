@@ -3,7 +3,13 @@
   "cam2":"192.168.xx.xx",
   "mail":"192.168.xx.xx",
   "driveapi":"xxx",
-  "drovecert":{},
-  "password":"",
-  "port":8080
+  "drivecert":{},
+  "drivepassword":"",
+  "port":8080,
+  "fgip" : "",
+  "fguser" : "",
+  "fgpass" : "",
+  "mailurl" : "",
+  "mailuser" : "",
+  "mailpass" : ""
 }

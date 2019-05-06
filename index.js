@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const sys = require('util')
@@ -15,12 +16,14 @@ var request = require("request").defaults({
 });
 
 // Set details for fortigate and mailwatcher here
-let fgip = ''
-let fguser = ''
-let fgpass = ''
-let mailurl = '' // including https:// git ieg "https://mailscanner.emea.gl3/"
-let mailuser = ''
-let mailpass = ''
+let rawdata = fs.readFileSync('settings.json');
+let student = JSON.parse(rawdata);
+let fgip = rawdata.fgip
+let fguser = rawdata.fguser
+let fgpass = rawdata.fgpass
+let mailurl = rawdata.mailurl // including https:// git ieg "https://mailscanner.emea.gl3/"
+let mailuser = rawdata.mailuser
+let mailpass = rawdata.mailpass
 
 let staticPath = path.join(__dirname, '/public')
 app.use(express.static(staticPath))

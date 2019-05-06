@@ -3,6 +3,10 @@ Unifying the control of ships networking, file-sharing, mail-curation, wifi-user
 
 <div style="text-align:center;margin-left:150px;margin-right:150px"><img src="cncscreenshot.png" /></div>
 
+### Requirements:
+1. git
+2. node/npm
+
 ### Installation:
 1. `git clone git@github.com/greenpeace/global-ops-cnc.git`
 2. `mv global-ops-cnc /opt/`
