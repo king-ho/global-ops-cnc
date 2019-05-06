@@ -98,32 +98,38 @@ let networks = {
       {
         "name": "WAN-VSAT-KU",
         "firewallpolicy": 53,
-        "gatewaypolicy": 29
+        "gatewaypolicy": 29,
+        "wan-gw":"192.168.10.10"
       },
       {
         "name": "WAN-VSAT-FX",
         "firewallpolicy": 57,
-        "gatewaypolicy": 24
+        "gatewaypolicy": 24,
+        "wan-gw":"172.25.214.10"
       },
       {
         "name": "WAN-3G",
         "firewallpolicy": 55,
-        "gatewaypolicy": 27
+        "gatewaypolicy": 27,
+        "wan-gw":"172.23.214.10"
       },
       {
         "name": "WAN-WIFI",
         "firewallpolicy": 56,
-        "gatewaypolicy": 28
+        "gatewaypolicy": 28,
+        "wan-gw":"172.24.214.10"
       },
       {
         "name": "WAN-4G",
         "firewallpolicy": 51,
-        "gatewaypolicy": 23
+        "gatewaypolicy": 23,
+        "wan-gw":"172.21.214.10"
       },
       {
         "name": "WAN-FBB",
         "firewallpolicy": 54,
-        "gatewaypolicy": 26
+        "gatewaypolicy": 26,
+        "wan-gw":"172.22.214.10"
       }
     ]
   },
@@ -134,7 +140,34 @@ let networks = {
     "WAN-WIFI",
     "WAN-4G",
     "WAN-FBB"
-  ]
+  ],
+  "pingtests":{
+    "WAN-VSAT-KU":{
+      "ip":"192.168.10.10",
+      "ping":0
+    },
+    "WAN-VSAT-FX":{
+      "ip":"172.25.214.10",
+      "ping":0
+    },
+    "WAN-3G":{
+      "ip":"172.23.214.10",
+      "ping":0
+    },
+    "WAN-WIFI":{
+      "ip":"172.24.214.10",
+      "ping":0
+    },
+    "WAN-4G":{
+      "ip":"172.21.214.10",
+      "ping":0
+    },
+    "WAN-FBB":{
+      "ip":"172.22.214.10",
+      "ping":0
+    }
+
+  }
 }
 
 /**
@@ -163,6 +196,55 @@ let networks = {
  * @param  {object} res result object
  * @return {object}     object with network policy references
  */
+refreshpings()
+function refreshpings(){
+  let pingnets = networks.pingtests;
+  for (key in pingnets) {
+    pingkypromise(key, pingnets[key], 'google.com').then(function(response){
+
+    }, function(error) {
+      console.error("Failed!", error);
+    })
+  }
+  setTimeout(function(){
+    refreshpings()
+  },60000)
+}
+
+function pingkypromise(name, gateway, toping){
+  return new Promise(function(resolve, reject){
+    ssh.connect({
+      host: fgip,
+      username: fguser,
+      password: fgpass
+    }).then(function() {
+      ssh.execCommand('exe ping-options source '+ gateway.ip).then(function(result) {
+        ssh.execCommand('exe ping-options timeout 10').then(function(result) {
+          ssh.execCommand('exe ping '+toping).then(function(resulti) {
+            var lines = resulti.stdout.split(/\r\n|\r|\n/)
+            var res = parseFloat(lines[9].split(" = ")[1].replace("ms","").split("\/")[1])
+            console.log(name + " : " + res)
+            networks.pingtests[name].ping = res;
+            resolve(res)
+          }).catch((error) => {
+            reject(name + " : unreachable")
+          })
+        }).catch((error) => {
+
+        })
+      }).catch((error) => {
+
+      })
+    }).catch((error) => {
+
+    })
+  })
+
+}
+app.get('/getping', function(req, res){
+  pings
+  res.send(networks)
+})
 app.get('/networks', function(req, res) {
   res.send(networks)
 })
