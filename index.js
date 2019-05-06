@@ -214,8 +214,8 @@ app.get('/getrouterpolicy', function(req, res) {
       res.send("Error running show router policy: " + error)
     })
   }).catch((error) => {
-    console.log("Error connecting to fortigate")
-    res.send("Error running show router policy")
+    console.log("Error connecting to fortigate " + error)
+    res.send("Error connecting to fortigate " + error)
   })
 })
 
