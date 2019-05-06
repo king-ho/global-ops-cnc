@@ -223,6 +223,9 @@ Webcam management = selects which camera to Sync
   <link rel="stylesheet" href="./css/pure-min.css">
   <title>CNC</title>
   <style media="screen">
+  html{
+    background:rgba(40, 84, 108 ,0.4)
+  }
     connection {
       border: 5px solid green;
       border-radius: 100%;
@@ -233,7 +236,7 @@ Webcam management = selects which camera to Sync
       height:200px;
     }
     svg {
-      height:200%;
+      height:120%;
       width:100%;
     }
     .networks, .gateways {
@@ -257,7 +260,7 @@ Webcam management = selects which camera to Sync
       margin-left:75px;
       float:left;
       overflow:scroll;
-      scrollbar-color: transparent transparent; 
+      scrollbar-color: transparent transparent;
     }
     table{
       table-layout: fixed
@@ -292,10 +295,17 @@ Webcam management = selects which camera to Sync
       background:green
     }
     fieldset{
+      color:white;
+       margin:0;
       border:0px;
-      margin:25px;
-      background:rgba(65,179,163,0.6);
+      background:rgba(40, 120, 77 ,0.7);
       display:flex;
+    }
+    fieldset:nth-child(2n){
+      background:rgba(40, 84, 108 ,0.7);
+      -webkit-box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
+-moz-box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
+box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
     }
     .fstitle{
       position:absolute;
@@ -304,7 +314,7 @@ Webcam management = selects which camera to Sync
       text-align:center;
       padding-left:20px;
       padding-right:20px;
-      background:#E27D60;
+      background:rgb(170, 82, 57);
       height:40px;
       line-height:40px;
     }
@@ -353,37 +363,22 @@ Webcam management = selects which camera to Sync
   </fieldset>
   <fieldset class="fiddy">
     <div class="fstitle">
-      Google Drive
+      Manual Sync
     </div><br>
-    <div class="inner">
-      <button class="drivemanual pure-button">Manual Sync</button>
-      <button class="driveoptions pure-button">Drive Options</button><br>
-      <label for="drivesync" class="pure-checkbox">
-        <input id="drivesync" type="checkbox"> enable google drive sync
-      </label>
+    <div class="inner" style="display: flex;flex-wrap:wrap">
+      <button style="flex: 1;" class="drivemanual pure-button">Drive Sync</button>
+      <button  style="flex: 1;" class="driveoptions pure-button">Drive Options</button>
+      <button  style="flex: 1;" class="pure-button">Noon Sync</button>
+      <button  style="flex: 1;" class="pure-button">User WiFi Account Sync</button>
+      <button  style="flex: 1;" class="cammanual pure-button">Webcam Sync</button>
     </div>
   </fieldset>
   <fieldset class="fiddy">
     <div class="fstitle">
-      Webcam
+      Webcam Previews
     </div><br>
     <div class="inner">
-      <button class="cammanual pure-button">Manual Sync</button>
-      <button class="camoptions pure-button">Manual Options</button><br>
-      <label for="webcamsync" class="pure-checkbox">
-        <input id="webcamsync" type="checkbox"> enable webcam sync
-      </label>
-    </div>
-  </fieldset>
-  <fieldset class="fiddy">
-    <div class="fstitle">
-      Noon-reports
-    </div><br>
-    <div class="inner">
-      <button class="pure-button">Manual Sync</button><br>
-      <label for="noonsync" class="pure-checkbox">
-        <input id="noonsync" type="checkbox"> enable noon-report sync
-      </label>
+
     </div>
   </fieldset>
 

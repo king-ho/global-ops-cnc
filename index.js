@@ -18,6 +18,7 @@ var request = require("request").defaults({
 // Set details for fortigate and mailwatcher here
 let rawdata = fs.readFileSync('settings.json');
 rawdata = JSON.parse(rawdata);
+let port = rawdata.port
 let fgip = rawdata.fgip
 let fguser = rawdata.fguser
 let fgpass = rawdata.fgpass
@@ -165,6 +166,52 @@ let networks = {
 app.get('/networks', function(req, res) {
   res.send(networks)
 })
+
+app.get('/syncdrive', function(req,res) {
+  res.send()
+})
+app.get('/syncdhcp', function(req,res) {
+  let dhcpsynccommand=`\#\!/bin/\#\!/usr/bin/env bash
+NR=1
+while IFS='' read -r line || [[ -n "$line" ]]; do
+    stringarray=($line)
+    echo $stringarray
+    echo edit $NR
+    echo set ip \${stringarray[1]}
+    echo set mac \${stringarray[0]}
+    stringarray=("\${stringarray[@]:2}")
+    echo set description "\${stringarray[*]}"
+    echo next
+    ((NR++))
+done < "$1"
+`
+  res.send()
+})
+app.get('/syncwifipasswords', function(req,res) {
+  let wifisynccommand=`\#\!/bin/bash
+echo fortigate user and group add list
+while IFS='' read -r line || [[ -n "$line" ]]; do
+    stringarray=($line)
+    echo config user local
+    echo edit \${stringarray[0]}
+    echo set type password
+    echo set passwd \${stringarray[1]}
+    echo end
+    echo config user group
+    echo edit MYTS_QNET
+    echo append member \${stringarray[0]}
+    echo next
+    echo end
+    echo ""
+done < "$1"
+`
+  res.send()
+})
+app.get('/syncwebcam', function(req,res) {
+  let scpcommand = `scp `+source+` `+dst
+  // get()
+  res.send()
+})
 /**
  * [return firewall policy]
  * @param  {object} req URL Request
@@ -178,6 +225,7 @@ app.get('/getfirewallpolicy', function(req, res) {
     username: fguser,
     password: fgpass
   }).then(function() {
+    console.log("successfully connected to fg. getting current configuration.")
     ssh.execCommand('show firewall policy').then(function(result) {
       let toret = extractPolicy(result.stdout)
       if (result.stderr)
@@ -246,7 +294,7 @@ app.get('/refreshmail', function(req, res) {
     }
   }, function(error, response, body) {
     if (!error && response.statusCode == 200) {
-      console.log("status : " + response.statusCode)
+      console.log("successfully connected to mailwatcher : " + response.statusCode)
       //console.log(body);
       request({
         url: mailurl+'/quarantine.php'
@@ -375,7 +423,7 @@ function extractPolicy(rp) {
           j = 100
         }
       }
-      console.log(((listofconfigs[confignr].status) ? listofconfigs[confignr].status : "enabled") + " - policy " + listofconfigs[confignr].nr + " : " + listofconfigs[confignr].comments)
+      // console.log(((listofconfigs[confignr].status) ? listofconfigs[confignr].status : "enabled") + " - policy " + listofconfigs[confignr].nr + " : " + listofconfigs[confignr].comments)
     }
   }
   //console.log("current policies for QNET: " + JSON.stringify(getRelevantPolicies(listofconfigs, "QNET")))
@@ -484,6 +532,6 @@ end`
  * [start web service]
  * @return {type} [description]
  */
-app.listen(8080, function() {
-  console.log('listening');
+app.listen(port, function() {
+  console.log('listening on port ' + port);
 });
