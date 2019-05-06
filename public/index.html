@@ -45,6 +45,7 @@ Webcam management = selects which camera to Sync
                   if (currentfirewalldata[cur].status == undefined){
                     $(".QNET").attr("gateway",networkdata.QNET.networks[i].name)
                     drawLine("QNET")
+                    $("#gwloader").html("")
                   }
                 }
               }
@@ -108,9 +109,6 @@ Webcam management = selects which camera to Sync
       });
     });
     function selectNetwork(gateway){
-      //styling selected button
-
-      //enable gateway selection
       $(".gw").prop('disabled', false);
     }
     function connect(network, gateway){
@@ -139,7 +137,7 @@ Webcam management = selects which camera to Sync
     function getmails(){
       $.get("/getmails",function(data){
         if(data.length<target){
-          $("#mailloader").text("loading: [ "+data.length+" / "+target+" ] "+Math.floor(100*data.length/target)+"%")
+          $("#mailloader").text("- loading: [ "+data.length+" / "+target+" ] "+Math.floor(100*data.length/target)+"%")
           setTimeout(function(){
             getmails()
           },1500)
@@ -294,25 +292,13 @@ Webcam management = selects which camera to Sync
       background:rgba(65,179,163,0.6);
       display:flex;
     }
-    #mailloader{
-      width:200px;
-      height:50px;
-      position:absolute;
-      left:50%;
-      margin-left:-100px;
-      top:50%;
-      margin-top:105px;
-      background: rgba(0,0,0,0.6);
-      color:white;
-      text-align: center;
-      line-height:50px;
-    }
     .fstitle{
       position:absolute;
       margin-top:-5px;
       margin-left:-10px;
       text-align:center;
-      width:100px;
+      padding-left:20px;
+      padding-right:20px;
       background:#E27D60;
       height:40px;
       line-height:40px;
@@ -323,7 +309,7 @@ Webcam management = selects which camera to Sync
 <body>
   <fieldset class="gatewayfs">
     <div class="fstitle">
-      Gateway
+      Gateway <span id="gwloader"> - loading</span>
     </div><br>
     <div class="networks pure-g">
 
@@ -338,7 +324,7 @@ Webcam management = selects which camera to Sync
   <fieldset style="height:400px;overflow:scroll">
 
     <div class="fstitle">
-      Mail <span id="mailloader">fetching mail list</span>
+      Mail <span id="mailloader"> - loading</span>
     </div><br>
     <div class="inner">
       <table id="mails">
@@ -350,7 +336,7 @@ Webcam management = selects which camera to Sync
             <th style="width:200px;padding-right: 10px;">subject</th>
             <th style="width:50px">size</th>
             <th style="width:50px">status</th>
-            <th style="width:25px">release</th>
+            <th style="width:40px">release</th>
           </tr>
         </thead>
         <tbody id="mailcontentlist">
