@@ -35,7 +35,7 @@ Webcam management = selects which camera to Sync
     jQuery(document).ready(function() {
       //get firewallpolicy
       $.get( "/getfirewallpolicy",function(currentfirewalldata){
-        if(currentfirewalldata.indexOf("Error running show router policy") == -1){
+        if(typeof currentfirewalldata == "object"){
           $.get("/networks",function(networkdata){
             console.log(currentfirewalldata)
             for(var i = 0 ; i < networkdata.QNET.networks.length; i++){
