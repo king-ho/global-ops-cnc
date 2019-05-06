@@ -16,7 +16,7 @@ var request = require("request").defaults({
 });
 
 // Set details for fortigate and mailwatcher here
-let rawdata = fs.readFileSync('settings.json');
+let rawdata = fs.readFileSync('/opt/global-ops-cnc/settings.json');
 let student = JSON.parse(rawdata);
 let fgip = rawdata.fgip
 let fguser = rawdata.fguser
