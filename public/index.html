@@ -145,7 +145,7 @@ Webcam management = selects which camera to Sync
           console.log("successfully got " + data.length + " mails")
           $("#mailloader").fadeOut()
           for (var mailnr = 0; mailnr < data.length; mailnr++) {
-            $("#mailcontentlist").append("<tr><td>"+data[mailnr].date+"</td><td>"+data[mailnr].from+"</td><td>"+data[mailnr].to+"</td><td>"+data[mailnr].title+"</td><td>"+data[mailnr].size+"</td><td>"+data[mailnr].type+"</td><td><i class='material-icons'>check_circle_outline</i></td></tr>")
+            $("#mailcontentlist").append("<tr><td>"+data[mailnr].date+"</td><td nowrap title='"+data[mailnr].from+"'>"+data[mailnr].from+"</td><td nowrap title='"+data[mailnr].to+"'>"+data[mailnr].to+"</td><td nowrap title='"+data[mailnr].title+"'>"+data[mailnr].title+"</td><td>"+data[mailnr].size+"</td><td>"+data[mailnr].type+"</td><td><i class='material-icons'>check_circle_outline</i></td></tr>")
           }
         }
       })
@@ -232,16 +232,17 @@ Webcam management = selects which camera to Sync
       background: none;
       height:200px;
     }
-
+    svg {
+      height:200%;
+      width:100%;
+    }
     .networks, .gateways {
       display: flex;
-      flex-wrap: nowrap;
       justify-content: center;
     }
 
     .networks>button, .gateways>button {
 
-      width: 180px;
       margin: 10px;
       letter-spacing: 3px;
       text-align: center;
@@ -256,6 +257,7 @@ Webcam management = selects which camera to Sync
       margin-left:75px;
       float:left;
       overflow:scroll;
+      scrollbar-color: transparent transparent; 
     }
     table{
       table-layout: fixed
@@ -265,6 +267,9 @@ Webcam management = selects which camera to Sync
     }
     td, th{
       overflow:hidden;
+    }
+    ::-webkit-scrollbar {
+        display: none;
     }
     .log{
       position:absolute;
@@ -326,17 +331,17 @@ Webcam management = selects which camera to Sync
     <div class="fstitle">
       Mail <span id="mailloader"> - loading</span>
     </div><br>
-    <div class="inner">
+    <div style="margin:0;margin-top:30px" class="inner">
       <table id="mails">
         <thead>
           <tr>
-            <th style="width:100px">date</th>
-            <th style="width:200px">from</th>
-            <th style="width:200px">to</th>
-            <th style="width:200px;padding-right: 10px;">subject</th>
+            <th style="width:60px">date</th>
+            <th>from</th>
+            <th>to</th>
+            <th>subject</th>
             <th style="width:50px">size</th>
             <th style="width:50px">status</th>
-            <th style="width:40px">release</th>
+            <th style="width:22px"></th>
           </tr>
         </thead>
         <tbody id="mailcontentlist">
