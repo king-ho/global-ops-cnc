@@ -121,13 +121,13 @@ Webcam management = selects which camera to Sync
       })
       gateways = ["WAN-WIFI", "WAN-VSAT-FX", "WAN-VSAT-KU", "WAN-FBB", "WAN-4G", "WAN-3G"]
       for (var i = 0; i < gateways.length; i++) {
-        $(".gateways").append('<button class="pure-button gw ' + gateways[i] + '">' + gateways[i].replace("WAN-", "") + '<div class="ping"></div></button>')
+        $(".gateways").append('<button gateway="'+gateways[i]+'" class="pure-button gw ' + gateways[i] + '">' + gateways[i].replace("WAN-", "") + '<div class="ping"></div></button>')
       }
       $('.gw').prop('disabled', true);
       $(".gw").click(function() {
         console.log($(this).text())
         $(".gw").prop('disabled', true);
-        connect($($(".selectednet")[0]).text(), $(this).text())
+        connect($($(".selectednet")[0]).text(), $(this).attr("gateway"))
         $(".network").removeClass('selectednet')
         $(".network").prop('disabled', false);
       })
