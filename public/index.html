@@ -34,36 +34,54 @@ Webcam management = selects which camera to Sync
     let target
     jQuery(document).ready(function() {
       refreshPings();
-      $("#config").click(function(){
+      $("#config").click(function() {
         console.log("config clicked")
         $("#configwindow").fadeIn()
       })
-      $("#configwindowclosebutton").click(function(){
+      $("#configwindowclosebutton").click(function() {
         $("#configwindow").fadeOut()
       })
+      $("#notifications").click(function() {
+        console.log("config clicked")
+
+        $("#notificationsclosebutton").animate({
+          "margin-right": '+=320'
+        });
+        $("#notificationwindow").animate({
+          "margin-right": '+=320'
+        });
+      })
+      $("#notificationsclosebutton").click(function() {
+        $("#notificationsclosebutton").animate({
+          "margin-right": '-=320'
+        });
+        $("#notificationwindow").animate({
+          "margin-right": '-=320'
+        });
+      })
       //get firewallpolicy
-      $.get( "/getfirewallpolicy",function(currentfirewalldata){
-        if(typeof currentfirewalldata == "object"){
-          $.get("/networks",function(networkdata){
+      $.get("/getfirewallpolicy", function(currentfirewalldata) {
+        if (typeof currentfirewalldata == "object") {
+          $.get("/networks", function(networkdata) {
             console.log(currentfirewalldata)
-            for(var i = 0 ; i < networkdata.QNET.networks.length; i++){
-              for(var cur in currentfirewalldata) {
-                if(networkdata.QNET.networks[i].firewallpolicy == cur){
+            for (var i = 0; i < networkdata.QNET.networks.length; i++) {
+              for (var cur in currentfirewalldata) {
+                if (networkdata.QNET.networks[i].firewallpolicy == cur) {
                   //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
-                  if (currentfirewalldata[cur].status == undefined){
-                    $(".QNET").attr("gateway",networkdata.QNET.networks[i].name)
+                  if (currentfirewalldata[cur].status == undefined) {
+                    $(".QNET").attr("gateway", networkdata.QNET.networks[i].name)
                     drawLine("QNET")
                     $("#gwloader").html("")
                   }
                 }
               }
             }
-            for(var i = 0 ; i < networkdata.MEDIANET.networks.length; i++){
-              for(var cur in currentfirewalldata) {
-                if(networkdata.MEDIANET.networks[i].firewallpolicy == cur){
+            for (var i = 0; i < networkdata.MEDIANET.networks.length; i++) {
+              for (var cur in currentfirewalldata) {
+                if (networkdata.MEDIANET.networks[i].firewallpolicy == cur) {
                   //console.log("network firewallpolicy id for MEDIANET " + networkdata.MEDIANET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
-                  if (currentfirewalldata[cur].status == undefined){
-                    $(".MEDIANET").attr("gateway",networkdata.MEDIANET.networks[i].name)
+                  if (currentfirewalldata[cur].status == undefined) {
+                    $(".MEDIANET").attr("gateway", networkdata.MEDIANET.networks[i].name)
                     drawLine("MEDIANET")
                   }
                 }
@@ -71,41 +89,45 @@ Webcam management = selects which camera to Sync
             }
           })
         } else {
+          var d = new Date();
+          n=d.toISOString();
+          addToNotification('error', 'Could not get firewall data', n, "Try to resolve by: <br>1) Reloading the page. <br>2) Ensuring you are on the same network as the fortigate (can you ping it?). <br>3) Contacting operations on skype chat group")
           console.log("could not get current firewalldata")
         }
       })
 
-      $.get( "/refreshmail",function(refreshdata){
-        target=refreshdata.nummails
-        if(refreshdata.status=="refreshed"){
+
+      $.get("/refreshmail", function(refreshdata) {
+        target = refreshdata.nummails
+        if (refreshdata.status == "refreshed") {
           console.log(refreshdata.nummails)
           getmails()
         }
-      } );
+      });
       svgContainer = d3.select("body").append("svg")
-                                       .attr("width", "100%")
-                                       .attr("height", "100%")
-                                       .attr("style", "position:absolute;top:0;pointer-events:none");
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("style", "position:absolute;top:0;pointer-events:none");
       networks = ["QNET", "MEDIANET"]
       for (var i = 0; i < networks.length; i++) {
-        $(".networks").append('<button class="network pure-button '+networks[i]+'">' + networks[i] + '</button>')
+        $(".networks").append('<button class="network pure-button ' + networks[i] + '">' + networks[i] + '</button>')
       }
-      $(".network").click(function(){
+      $(".network").click(function() {
         $(".network").not(this).prop('disabled', true);
         console.log($(this).text())
         $(this).addClass('selectednet')
         selectNetwork($(this).text())
 
       })
-      gateways = [ "WAN-WIFI", "WAN-VSAT-FX", "WAN-VSAT-KU", "WAN-FBB", "WAN-4G", "WAN-3G"]
+      gateways = ["WAN-WIFI", "WAN-VSAT-FX", "WAN-VSAT-KU", "WAN-FBB", "WAN-4G", "WAN-3G"]
       for (var i = 0; i < gateways.length; i++) {
-        $(".gateways").append('<button class="pure-button gw '+gateways[i]+'">' + gateways[i].replace("WAN-","") + '<div class="ping"></div></button>')
+        $(".gateways").append('<button class="pure-button gw ' + gateways[i] + '">' + gateways[i].replace("WAN-", "") + '<div class="ping"></div></button>')
       }
       $('.gw').prop('disabled', true);
-      $(".gw").click(function(){
+      $(".gw").click(function() {
         console.log($(this).text())
         $(".gw").prop('disabled', true);
-        connect($($(".selectednet")[0]).text(),$(this).text())
+        connect($($(".selectednet")[0]).text(), $(this).text())
         $(".network").removeClass('selectednet')
         $(".network").prop('disabled', false);
       })
@@ -116,44 +138,48 @@ Webcam management = selects which camera to Sync
         }
       });
     });
-    function selectNetwork(gateway){
+
+    function selectNetwork(gateway) {
       $(".gw").prop('disabled', false);
     }
-    function connect(network, gateway){
+
+    function connect(network, gateway) {
       console.log("connecting " + network + " to " + gateway)
-      $("."+network).attr("gateway",gateway)
-      $.get( "/set?network="+network+"&gateway="+gateway );
+      $("." + network).attr("gateway", gateway)
+      $.get("/set?network=" + network + "&gateway=" + gateway);
       drawLine(network)
     }
 
-    function drawLine(network){
-      let gateway = $("."+network).attr("gateway")
+    function drawLine(network) {
+      let gateway = $("." + network).attr("gateway")
       console.log(network + " - " + gateway)
-      if(gateway != ""){
-        d3.select("."+network+"_line").remove()
+      if (gateway != "") {
+        d3.select("." + network + "_line").remove()
         var line = svgContainer.append("line")
-          .attr("x1", $("."+network).offset().left+$("."+network).width()/2+20)
-          .attr("y1", $("."+network).offset().top+$("."+network).height()+20)
-          .attr("x2", $("."+gateway).offset().left+$("."+gateway).width()/2+20)
-          .attr("y2", $("."+gateway).offset().top)
+          .attr("x1", $("." + network).offset().left + $("." + network).width() / 2 + 20)
+          .attr("y1", $("." + network).offset().top + $("." + network).height() + 20)
+          .attr("x2", $("." + gateway).offset().left + $("." + gateway).width() / 2 + 20)
+          .attr("y2", $("." + gateway).offset().top)
           .attr("stroke-width", 2)
           .attr("stroke", "black")
-          .attr("class",network+"_line lern")
+          .attr("class", network + "_line lern")
       }
     }
     var resizeTimer;
-    function getmails(){
-      $.get("/getmails",function(data){
-        if(data.length<target){
-          $("#mailloader").text("- loading: [ "+data.length+" / "+target+" ] "+Math.floor(100*data.length/target)+"%")
-          setTimeout(function(){
+
+    function getmails() {
+      $.get("/getmails", function(data) {
+        if (data.length < target) {
+          $("#mailloader").text("- loading: [ " + data.length + " / " + target + " ] " + Math.floor(100 * data.length / target) + "%")
+          setTimeout(function() {
             getmails()
-          },1500)
+          }, 1500)
         } else {
           console.log("successfully got " + data.length + " mails")
           $("#mailloader").fadeOut()
           for (var mailnr = 0; mailnr < data.length; mailnr++) {
-            $("#mailcontentlist").append("<tr><td>"+data[mailnr].date+"</td><td nowrap title='"+data[mailnr].from+"'>"+data[mailnr].from+"</td><td nowrap title='"+data[mailnr].to+"'>"+data[mailnr].to+"</td><td nowrap title='"+data[mailnr].title+"'>"+data[mailnr].title+"</td><td>"+data[mailnr].size+"</td><td>"+data[mailnr].type+"</td><td><i class='material-icons'>check_circle_outline</i></td></tr>")
+            $("#mailcontentlist").append("<tr><td>" + data[mailnr].date + "</td><td nowrap title='" + data[mailnr].from + "'>" + data[mailnr].from + "</td><td nowrap title='" + data[mailnr].to + "'>" + data[mailnr].to + "</td><td nowrap title='" +
+              data[mailnr].title + "'>" + data[mailnr].title + "</td><td>" + data[mailnr].size + "</td><td>" + data[mailnr].type + "</td><td><i class='material-icons'>check_circle_outline</i></td></tr>")
           }
         }
       })
@@ -164,7 +190,7 @@ Webcam management = selects which camera to Sync
       resizeTimer = setTimeout(function() {
 
         for (var i = 0; i < networks.length; i++) {
-          if($("."+networks[i]).attr("gateway")){
+          if ($("." + networks[i]).attr("gateway")) {
             drawLine(networks[i])
           }
         }
@@ -172,82 +198,106 @@ Webcam management = selects which camera to Sync
       }, 150);
 
     });
+
     function sortTable(n) {
-    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("mails");
-    switching = true;
-    // Set the sorting direction to ascending:
-    dir = "asc";
-    /* Make a loop that will continue until
-    no switching has been done: */
-    while (switching) {
-      // Start by saying: no switching is done:
-      switching = false;
-      rows = table.rows;
-      /* Loop through all table rows (except the
-      first, which contains table headers): */
-      for (i = 1; i < (rows.length - 1); i++) {
-        // Start by saying there should be no switching:
-        shouldSwitch = false;
-        /* Get the two elements you want to compare,
-        one from current row and one from the next: */
-        x = rows[i].getElementsByTagName("TD")[n];
-        y = rows[i + 1].getElementsByTagName("TD")[n];
-        /* Check if the two rows should switch place,
-        based on the direction, asc or desc: */
-        if (dir == "asc") {
-          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        } else if (dir == "desc") {
-          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
+      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById("mails");
+      switching = true;
+      // Set the sorting direction to ascending:
+      dir = "asc";
+      /* Make a loop that will continue until
+      no switching has been done: */
+      while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        /* Loop through all table rows (except the
+        first, which contains table headers): */
+        for (i = 1; i < (rows.length - 1); i++) {
+          // Start by saying there should be no switching:
+          shouldSwitch = false;
+          /* Get the two elements you want to compare,
+          one from current row and one from the next: */
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          /* Check if the two rows should switch place,
+          based on the direction, asc or desc: */
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
           }
         }
-      }
-      if (shouldSwitch) {
-        /* If a switch has been marked, make the switch
-        and mark that a switch has been done: */
-        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-        switching = true;
-        // Each time a switch is done, increase this count by 1:
-        switchcount ++;
-      } else {
-        /* If no switching has been done AND the direction is "asc",
-        set the direction to "desc" and run the while loop again. */
-        if (switchcount == 0 && dir == "asc") {
-          dir = "desc";
+        if (shouldSwitch) {
+          /* If a switch has been marked, make the switch
+          and mark that a switch has been done: */
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
           switching = true;
+          // Each time a switch is done, increase this count by 1:
+          switchcount++;
+        } else {
+          /* If no switching has been done AND the direction is "asc",
+          set the direction to "desc" and run the while loop again. */
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
         }
       }
     }
-  }
-  function refreshPings(){
-    $.get('/networks',function(result){
-      let pings = result.pingtests
-      for(key in pings){
-        $("."+key+" > .ping").text("ping:"+pings[key].ping)
-      }
-    })
-    setTimeout(function(){
-      refreshPings()
-    },30000)
-  }
-  window.addEventListener("hashchange", function () {
-    window.scrollTo(window.scrollX, window.scrollY- 48);
-});
+    function addReadButtonFunctionalityToNotifications(){
+      $(".closenotification").click(function(){
+        $(this).parent().remove()
+        updateBadge()
+      })
+    }
+    function addToNotification(type, title, subtitle, text) {
+      let typestring, iconstring
+      if(type == "error")
+        typestring="errormessage"
+        iconstring="error"
+      $("#notificationsdisplayer").prepend(
+        "<div class='notification unread'><div class='notificationbreak'></div><div class='closenotification'><i class='material-icons'>close</i></div><div class='"+typestring+"'><i class='material-icons'>"+iconstring+"</i></div><strong>"+title+"</strong><br><i>"+subtitle+"</i><br>"+text+"</div>"
+      )
+      addReadButtonFunctionalityToNotifications()
+      updateBadge()
+    }
+    function updateBadge(){
+      count = $("#notificationsdisplayer > .unread").length
+      $("#badgecount").text(count);
+    }
+    function refreshPings() {
+      $.get('/networks', function(result) {
+        let pings = result.pingtests
+        for (key in pings) {
+          $("." + key + " > .ping").text("ping:" + pings[key].ping)
+        }
+
+      })
+      setTimeout(function() {
+        refreshPings()
+      }, 30000)
+    }
+    window.addEventListener("hashchange", function() {
+      window.scrollTo(window.scrollX, window.scrollY - 48);
+    });
   </script>
   <meta charset="utf-8">
   <link rel="stylesheet" href="./css/pure-min.css">
   <title>CNC</title>
   <style media="screen">
-  html{
-    background:rgba(40, 84, 108 ,0.4)
-  }
+    html {
+      background: rgba(40, 84, 108, 0.4)
+    }
+
     connection {
       border: 5px solid green;
       border-radius: 100%;
@@ -255,18 +305,22 @@ Webcam management = selects which camera to Sync
 
     .divider {
       background: none;
-      height:200px;
+      height: 200px;
     }
+
     svg {
-      height:120%;
-      width:100%;
+      height: 120%;
+      width: 100%;
     }
-    .networks, .gateways {
+
+    .networks,
+    .gateways {
       display: flex;
       justify-content: center;
     }
 
-    .networks>button, .gateways>button {
+    .networks>button,
+    .gateways>button {
 
       margin: 10px;
       letter-spacing: 3px;
@@ -274,80 +328,115 @@ Webcam management = selects which camera to Sync
       line-height: 75px;
       font-size: 16px;
     }
+
     .pure-button {
-      margin:10px;
+      margin: 10px;
     }
+
     .inner {
       margin: 30px;
-      margin-left:75px;
-      float:left;
-      overflow:scroll;
+      margin-left: 75px;
+      float: left;
+      overflow: scroll;
       scrollbar-color: transparent transparent;
     }
-    table{
+
+    table {
       table-layout: fixed
     }
-    table.space{
+
+    table.space {
       border-spacing: 15px 10px;
     }
-    td, th{
-      overflow:hidden;
+
+    td,
+    th {
+      overflow: hidden;
     }
+
     ::-webkit-scrollbar {
-        display: none;
+      display: none;
     }
-    .log{
-      position:absolute;
-      right:0;
-      margin-top:-5px;
-      margin-right:25px;
-      text-align:center;
-      width:70%;
-      background:black;
-      color:white;
-      text-align:left;
-      padding-left:15px;
-      height:416px;
-      line-height:40px;
-      float:right;
-      font-size:18px;
+
+    .log {
+      position: absolute;
+      right: 0;
+      margin-top: -5px;
+      margin-right: 25px;
+      text-align: center;
+      width: 70%;
+      background: black;
+      color: white;
+      text-align: left;
+      padding-left: 15px;
+      height: 416px;
+      line-height: 40px;
+      float: right;
+      font-size: 18px;
       font-family: Courier New;
     }
+
     .selectednet {
-      background:green
+      background: green
     }
-    fieldset{
-      color:white;
-       margin:0;
-      border:0px;
-      background:rgba(40, 120, 77 ,0.7);
-      display:flex;
+
+    .notification {
+      width: 100%;
+
     }
-    fieldset:nth-child(2n){
-      background:rgba(40, 84, 108 ,0.7);
-      -webkit-box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
--moz-box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
-box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
+    .notificationbreak{
+      height:3px;
+      background-color: grey;
+      width:100%;
     }
-    .fstitle{
-      position:absolute;
-      margin-top:-5px;
-      margin-left:-10px;
-      text-align:center;
-      padding-left:20px;
-      padding-right:20px;
-      background:rgb(170, 82, 57);
-      height:40px;
-      line-height:40px;
+    .notification .errormessage {
+      color: red;
     }
+    .closenotification {
+      position: absolute;
+      right:15px;
+      cursor: pointer;
+    }
+    fieldset {
+      color: white;
+      margin: 0;
+      border: 0px;
+      background: rgba(40, 120, 77, 0.7);
+      display: flex;
+    }
+
+    fieldset:nth-child(2n) {
+      background: rgba(40, 84, 108, 0.7);
+      -webkit-box-shadow: inset 0px 1px 16px -2px rgba(0, 0, 0, 0.43);
+      -moz-box-shadow: inset 0px 1px 16px -2px rgba(0, 0, 0, 0.43);
+      box-shadow: inset 0px 1px 16px -2px rgba(0, 0, 0, 0.43);
+    }
+
+    .fstitle {
+      position: absolute;
+      margin-top: -5px;
+      margin-left: -10px;
+      text-align: center;
+      padding-left: 20px;
+      padding-right: 20px;
+      background: rgb(170, 82, 57);
+      height: 40px;
+      line-height: 40px;
+    }
+
     .navbar {
       overflow: hidden;
       background-color: #333;
-      position: fixed; /* Set the navbar to fixed position */
-      top: 0; /* Position the navbar at the top of the page */
-      width: 100%; /* Full width */
-      z-index:1;
-    }/* Links inside the navbar */
+      position: fixed;
+      /* Set the navbar to fixed position */
+      top: 0;
+      /* Position the navbar at the top of the page */
+      width: 100%;
+      /* Full width */
+      z-index: 1;
+    }
+
+    /* Links inside the navbar */
     .navbar a {
       float: right;
       display: block;
@@ -356,12 +445,14 @@ box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
       padding: 14px 16px;
       text-decoration: none;
     }
+
     /* Change background on mouse-over */
     .navbar a:hover {
       background: #ddd;
       color: black;
     }
-    .ping{
+
+    .ping {
       line-height: 10px;
       position: absolute;
       bottom: 5px;
@@ -370,43 +461,76 @@ box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
       display: block;
       left: 0px;
       width: 100%;
-      font-size:10px;
+      font-size: 10px;
     }
-    .gatewayfs{
-      margin-top:48px
+
+    .gatewayfs {
+      margin-top: 48px
     }
-    .gw{
-      position:relative
+
+    .gw {
+      position: relative
     }
-    #configwindow{
-      color:white;
-      display:none;
-      overflow: hidden;
-      background-color: rgba(0,0,0,0.8);
-      position: fixed; /* Set the navbar to fixed position */
-      top: 0; /* Position the navbar at the top of the page */
-      width: 100%; /* Full width */
+
+    .overlay {
+      color: white;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      /* Set the navbar to fixed position */
+      top: 0;
+      /* Position the navbar at the top of the page */
+
       height: 100%;
-      z-index:2;
+      z-index: 2;
     }
+
+    .fullwidth {
+      display: none;
+      width: 100%;
+      overflow: hidden;
+      /* Full width */
+    }
+
+    .sidepanel {
+      overflow: scroll;
+      width: 320px;
+      right: -320px;
+      padding-top: 40px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    #badgecount{
+      position:absolute;
+      bottom:0
+    }
+    #configwindow {}
   </style>
 </head>
 
 <body>
-  <div id="configwindow">
+  <div id="configwindow" class="overlay fullwidth">
     <div style="position:absolute;right:5px;top:5px"><i id="configwindowclosebutton" style="font-size:48px;cursor:pointer" class="material-icons">close</i></div>
     <div id="configdisplayer">
 
     </div>
   </div>
+  <div id="notificationwindow" class="overlay sidepanel">
+    <div style="position:fixed;right:-315px;top:5px"><i id="notificationsclosebutton" style="font-size:32px;cursor:pointer" class="material-icons">close</i></div>
+    <div id="notificationsdisplayer">
+
+    </div>
+  </div>
   <div class="navbar">
-  <span><h5 style="color:white;float:left">CNC</h5></span>
-  <a id="config"><i class="material-icons">settings</i></a>
-  <a href="#webcams">cams</a>
-  <a href="#syncs">syncs</a>
-  <a href="#mailscanner">mail</a>
-  <a href="#gatewayfs">gateways</a>
-</div>
+    <span>
+      <h5 style="color:white;float:left">CNC</h5>
+    </span>
+    <a id="notifications"><span id="badgecount"></span><i class="material-icons">message</i></a>
+    <a id="config"><i class="material-icons">settings</i></a>
+    <a href="#webcams">cams</a>
+    <a href="#syncs">syncs</a>
+    <a href="#mailscanner">mail</a>
+    <a href="#gatewayfs">gateways</a>
+  </div>
   <fieldset id="gatewayfs" class="gatewayfs">
     <div class="fstitle">
       Gateway <span id="gwloader"> - loading</span>
@@ -452,10 +576,10 @@ box-shadow: inset 0px 1px 16px -2px rgba(0,0,0,0.43);
     </div><br>
     <div class="inner" style="display: flex;flex-wrap:wrap">
       <button style="flex: 1;" class="drivemanual pure-button">Drive Sync</button>
-      <button  style="flex: 1;" class="driveoptions pure-button">Drive Options</button>
-      <button  style="flex: 1;" class="pure-button">Noon Sync</button>
-      <button  style="flex: 1;" class="pure-button">User WiFi Account Sync</button>
-      <button  style="flex: 1;" class="cammanual pure-button">Webcam Sync</button>
+      <button style="flex: 1;" class="driveoptions pure-button">Drive Options</button>
+      <button style="flex: 1;" class="pure-button">Noon Sync</button>
+      <button style="flex: 1;" class="pure-button">User WiFi Account Sync</button>
+      <button style="flex: 1;" class="cammanual pure-button">Webcam Sync</button>
     </div>
   </fieldset>
   <fieldset id="webcams" class="fiddy">
