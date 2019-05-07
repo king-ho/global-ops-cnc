@@ -59,43 +59,10 @@ Webcam management = selects which camera to Sync
           "margin-right": '-=320'
         });
       })
-      //get firewallpolicy
-      $.get("/getfirewallpolicy", function(currentfirewalldata) {
-        if (typeof currentfirewalldata == "object") {
-          $.get("/networks", function(networkdata) {
-            console.log(currentfirewalldata)
-            for (var i = 0; i < networkdata.QNET.networks.length; i++) {
-              for (var cur in currentfirewalldata) {
-                if (networkdata.QNET.networks[i].firewallpolicy == cur) {
-                  //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
-                  if (currentfirewalldata[cur].status == undefined) {
-                    $(".QNET").attr("gateway", networkdata.QNET.networks[i].name)
-                    drawLine("QNET")
-                    $("#gwloader").html("")
-                  }
-                }
-              }
-            }
-            for (var i = 0; i < networkdata.MEDIANET.networks.length; i++) {
-              for (var cur in currentfirewalldata) {
-                if (networkdata.MEDIANET.networks[i].firewallpolicy == cur) {
-                  //console.log("network firewallpolicy id for MEDIANET " + networkdata.MEDIANET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
-                  if (currentfirewalldata[cur].status == undefined) {
-                    $(".MEDIANET").attr("gateway", networkdata.MEDIANET.networks[i].name)
-                    drawLine("MEDIANET")
-                  }
-                }
-              }
-            }
-          })
-        } else {
-          var d = new Date();
-          n=d.toISOString();
-          addToNotification('error', 'Could not get firewall data', n, "Try to resolve by: <br>1) Reloading the page. <br>2) Ensuring you are on the same network as the fortigate (can you ping it?). <br>3) Contacting operations on skype chat group")
-          console.log("could not get current firewalldata")
-        }
-      })
 
+
+      //get firewallpolicy
+      //getNetworks()
 
       $.get("/refreshmail", function(refreshdata) {
         target = refreshdata.nummails
@@ -149,7 +116,44 @@ Webcam management = selects which camera to Sync
       $.get("/set?network=" + network + "&gateway=" + gateway);
       drawLine(network)
     }
-
+    function getNetworks(){
+      //get firewallpolicy
+      $.get("/getfirewallpolicy", function(currentfirewalldata) {
+        if (typeof currentfirewalldata == "object") {
+          $.get("/networks", function(networkdata) {
+            console.log(currentfirewalldata)
+            for (var i = 0; i < networkdata.QNET.networks.length; i++) {
+              for (var cur in currentfirewalldata) {
+                if (networkdata.QNET.networks[i].firewallpolicy == cur) {
+                  //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
+                  if (currentfirewalldata[cur].status == undefined) {
+                    $(".QNET").attr("gateway", networkdata.QNET.networks[i].name)
+                    drawLine("QNET")
+                    $("#gwloader").html("")
+                  }
+                }
+              }
+            }
+            for (var i = 0; i < networkdata.MEDIANET.networks.length; i++) {
+              for (var cur in currentfirewalldata) {
+                if (networkdata.MEDIANET.networks[i].firewallpolicy == cur) {
+                  //console.log("network firewallpolicy id for MEDIANET " + networkdata.MEDIANET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
+                  if (currentfirewalldata[cur].status == undefined) {
+                    $(".MEDIANET").attr("gateway", networkdata.MEDIANET.networks[i].name)
+                    drawLine("MEDIANET")
+                  }
+                }
+              }
+            }
+          })
+        } else {
+          var d = new Date();
+          n=d.toISOString();
+          addToNotification('error', 'Could not get firewall data', n, "Try to resolve by: <br>1) Reloading the page. <br>2) Ensuring you are on the same network as the fortigate (can you ping it?). <br>3) Contacting operations on skype chat group")
+          console.log("could not get current firewalldata")
+        }
+      })
+    }
     function drawLine(network) {
       let gateway = $("." + network).attr("gateway")
       console.log(network + " - " + gateway)
@@ -276,6 +280,7 @@ Webcam management = selects which camera to Sync
     }
     function refreshPings() {
       $.get('/networks', function(result) {
+        getNetworks()
         let pings = result.pingtests
         for (key in pings) {
           $("." + key + " > .ping").text(pings[key].ping+"ms")
@@ -287,7 +292,7 @@ Webcam management = selects which camera to Sync
       }, 10000)
     }
     window.addEventListener("hashchange", function() {
-      window.scrollTo(window.scrollX, window.scrollY - 48);
+      window.scrollTo(window.scrollX, window.scrollY - 58);
     });
   </script>
   <meta charset="utf-8">
@@ -465,7 +470,7 @@ Webcam management = selects which camera to Sync
     }
 
     .gatewayfs {
-      margin-top: 48px
+      margin-top: 58px
     }
 
     .gw {
