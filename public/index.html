@@ -278,7 +278,7 @@ Webcam management = selects which camera to Sync
       $.get('/networks', function(result) {
         let pings = result.pingtests
         for (key in pings) {
-          $("." + key + " > .ping").text("ping:" + pings[key].ping)
+          $("." + key + " > .ping").text(pings[key].ping+"ms")
         }
 
       })
