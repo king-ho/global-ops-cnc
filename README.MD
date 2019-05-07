@@ -17,6 +17,7 @@ Unifying the control of ships networking, file-sharing, mail-curation, wifi-user
 7. `npm install forever -g` installs forever globally to keep the service running
 8. `npm install forever-service -g` installs forever-service globally to create forever services
 9. `forever-service install cnc --start --script /opt/global-ops-cnc/index.js` starts the service (for reboots)
+10. open port 8080 or whichever port specified in `settings.json`
 
 ### Usage:
 In your browser navigate to whatever IP of the machine you are running on, or assign a DNS entry to that ip, followed by the port specified in `settings.json`. Use the admin password specified in `settings.json`.
