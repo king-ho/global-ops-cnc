@@ -208,7 +208,7 @@ function refreshpings(){
   }
   setTimeout(function(){
     refreshpings()
-  },60000)
+  },10000)
 }
 
 function pingkypromise(name, gateway, toping){
@@ -219,7 +219,7 @@ function pingkypromise(name, gateway, toping){
       password: fgpass
     }).then(function() {
       ssh.execCommand('exe ping-options source '+ gateway.ip).then(function(result) {
-        ssh.execCommand('exe ping-options timeout 10').then(function(result) {
+        ssh.execCommand('exe ping-options timeout 5').then(function(result) {
           ssh.execCommand('exe ping '+toping).then(function(resulti) {
             var lines = resulti.stdout.split(/\r\n|\r|\n/)
             var res = parseFloat(lines[9].split(" = ")[1].replace("ms","").split("\/")[1])
@@ -227,16 +227,20 @@ function pingkypromise(name, gateway, toping){
             networks.pingtests[name].ping = res;
             resolve(res)
           }).catch((error) => {
-            reject(name + " : unreachable")
+            networks.pingtests[name].ping = 0
+            reject(name + " : 1unreachable")
           })
         }).catch((error) => {
-
+          networks.pingtests[name].ping = 0
+          reject(name + " : 2unreachable")
         })
       }).catch((error) => {
-
+        networks.pingtests[name].ping = 0
+        reject(name + " : 3unreachable")
       })
     }).catch((error) => {
-
+      networks.pingtests[name].ping = 0
+      reject(name + " : 4unreachable")
     })
   })
 
