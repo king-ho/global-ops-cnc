@@ -197,10 +197,10 @@ let networks = {
  * @return {object}     object with network policy references
  */
 refreshpings()
-function refreshpings(){
+async function refreshpings(){
   let pingnets = networks.pingtests;
   for (key in pingnets) {
-    pingkypromise(key, pingnets[key], 'google.com').then(function(response){
+    await pingkypromise(key, pingnets[key], 'google.com').then(function(response){
 
     }, function(error) {
       console.error("Failed!", error);
@@ -218,28 +218,29 @@ function pingkypromise(name, gateway, toping){
       username: fguser,
       password: fgpass
     }).then(function() {
+      console.log("logged into fortigate to check "+name + " ping")
       ssh.execCommand('exe ping-options source '+ gateway.ip).then(function(result) {
         ssh.execCommand('exe ping-options timeout 5').then(function(result) {
           ssh.execCommand('exe ping '+toping).then(function(resulti) {
             var lines = resulti.stdout.split(/\r\n|\r|\n/)
             var res = parseFloat(lines[9].split(" = ")[1].replace("ms","").split("\/")[1])
             console.log(name + " : " + res)
-            networks.pingtests[name].ping = res;
+            networks.pingtests[name].ping = name+":"+resulti.stdout.replace("router-myts # ","").replace("router-myts # ","").replace("WAN-","").trim();
             resolve(res)
           }).catch((error) => {
-            networks.pingtests[name].ping = 0
+            networks.pingtests[name].ping = -1
             reject(name + " : 1unreachable")
           })
         }).catch((error) => {
-          networks.pingtests[name].ping = 0
+          networks.pingtests[name].ping = -1
           reject(name + " : 2unreachable")
         })
       }).catch((error) => {
-        networks.pingtests[name].ping = 0
+        networks.pingtests[name].ping = -1
         reject(name + " : 3unreachable")
       })
     }).catch((error) => {
-      networks.pingtests[name].ping = 0
+      networks.pingtests[name].ping = -1
       reject(name + " : 4unreachable")
     })
   })
@@ -318,8 +319,8 @@ app.get('/getfirewallpolicy', function(req, res) {
         console.log('STDERR: ' + result.stderr)
       res.send(toret)
     }).catch((error) => {
-      console.log("Error running show router policy: " + error)
-      res.send("Error running show router policy: " + error)
+      console.log("Error running show firewall policy: " + error)
+      res.send("Error running show firewall policy: " + error)
     })
   }).catch((error) => {
     console.log("Error connecting to fortigate")

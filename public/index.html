@@ -88,7 +88,7 @@ Webcam management = selects which camera to Sync
       })
       gateways = ["WAN-WIFI", "WAN-VSAT-FX", "WAN-VSAT-KU", "WAN-FBB", "WAN-4G", "WAN-3G"]
       for (var i = 0; i < gateways.length; i++) {
-        $(".gateways").append('<button gateway="'+gateways[i]+'" class="pure-button gw ' + gateways[i] + '">' + gateways[i].replace("WAN-", "") + '<div class="ping"></div></button>')
+        $(".gateways").append('<button gateway="'+gateways[i]+'" class="pure-button gw ' + gateways[i] + '">' + gateways[i].replace("WAN-", "") + '<div class="ping"></div></button><span style="margin-top:10px;margin-left:-35px" class="'+gateways[i]+'-pinginfo"><i class="material-icons">info</i></span>')
       }
       $('.gw').prop('disabled', true);
       $(".gw").click(function() {
@@ -283,10 +283,19 @@ Webcam management = selects which camera to Sync
         getNetworks()
         let pings = result.pingtests
         for (key in pings) {
-          $("." + key + " > .ping").text(pings[key].ping+"ms")
+          if(typeof(pings[key].ping)=="string"){
+            $("." + key + "-pinginfo").attr("title",pings[key].ping.replace(/\r?\n?[^\r\n]*$/,"").trim())
+            l=pings[key].ping.replace(/\r?\n?[^\r\n]*$/,"").trim().split(/\r\n|\r|\n/).length
+            $("." + key + " .ping").text(pings[key].ping.split(/\r\n|\r|\n/)[l-1].split("\/")[3]+"ms")
+          } else {
+            $("." + key + "-pinginfo").attr("title","down")
+            $("." + key + " .ping").text("down")
+          }
         }
 
+
       })
+      $(".ping").mouseover
       setTimeout(function() {
         refreshPings()
       }, 10000)
@@ -527,7 +536,7 @@ Webcam management = selects which camera to Sync
   </div>
   <div class="navbar">
     <span>
-      <h5 style="color:white;float:left">CNC</h5>
+      <h5 style="color:white;float:left;margin-left: 20px;">CNC</h5>
     </span>
     <a id="notifications"><span id="badgecount"></span><i class="material-icons">message</i></a>
     <a id="config"><i class="material-icons">settings</i></a>
