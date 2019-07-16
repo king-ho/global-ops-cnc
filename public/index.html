@@ -24,7 +24,12 @@ Webcam management = selects which camera to Sync
   <script src="./js/moment.min.js"></script>
   <link type="text/css" rel="stylesheet" href="./css/materialicons.css" media="screen,projection" />
   <link type="text/css" rel="stylesheet" href="./css/materialize.min.css" media="screen,projection" />
-
+  <style media="screen">
+    td {
+      width: 1px;
+      white-space: nowrap;
+    }
+  </style>
 
   <!-- Connect your elements like in this example -->
   <script>
@@ -32,8 +37,57 @@ Webcam management = selects which camera to Sync
     let networks
     let gateways
     let target
+
     jQuery(document).ready(function() {
-      refreshPings();
+      refreshPings()
+      refreshSyncs()
+      getCams()
+      getFailedMail()
+
+      $(".enableemailsync").click(function(e) {
+        e.preventDefault();
+        console.log("clicked")
+        $.get("/genMailCron", function(data) {})
+        // $(".enableemailsync").attr("disabled", true)
+        // $(".disableemailsync").attr("disabled", false)
+      })
+      $(".disableemailsync").click(function(e) {
+        e.preventDefault();
+        console.log("clicked")
+        $.get("/remMailCron", function(data) {})
+        // $(".enableemailsync").attr("disabled", false)
+        // $(".disableemailsync").attr("disabled", true)
+      })
+      $(".enablewebcamsync").click(function(e) {
+        e.preventDefault();
+        console.log("clicked")
+        $.get("/genWebcamCron", function(data) {})
+        // $(".enablewebcamsync").attr("disabled", true)
+        // $(".disablewebcamsync").attr("disabled", false)
+      })
+      $(".disablewebcamsync").click(function(e) {
+        e.preventDefault();
+        console.log("clicked")
+        $.get("/remWebcamCron", function(data) {})
+        // $(".enablewebcamsync").attr("disabled", false)
+        // $(".disablewebcamsync").attr("disabled", true)
+      })
+      $(".enablenoonsync").click(function(e) {
+        e.preventDefault();
+        console.log("clicked")
+        $.get("/genNoonsyncCron", function(data) {})
+        // $(".enablenoonsync").attr("disabled", true)
+        // $(".disablenoonsync").attr("disabled", false)
+      })
+      $(".disablenoonsync").click(function(e) {
+        e.preventDefault();
+        console.log("clicked")
+        console.log("disabling noonsync")
+        $.get("/remNoonsyncCron", function(data) {})
+        // $(".enablenoonsync").attr("disabled", false)
+        // $(".disablenoonsync").attr("disabled", true)
+      })
+
       $("#config").click(function() {
         console.log("config clicked")
         $("#configwindow").fadeIn()
@@ -75,7 +129,7 @@ Webcam management = selects which camera to Sync
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("style", "position:absolute;top:0;pointer-events:none");
-      networks = ["QNET", "MEDIANET"]
+      networks = ["QNET", "MEDIANET", "SHIPNET"]
       for (var i = 0; i < networks.length; i++) {
         $(".networks").append('<button class="network pure-button ' + networks[i] + '">' + networks[i] + '</button>')
       }
@@ -88,7 +142,8 @@ Webcam management = selects which camera to Sync
       })
       gateways = ["WAN-WIFI", "WAN-VSAT-FX", "WAN-VSAT-KU", "WAN-FBB", "WAN-4G", "WAN-3G"]
       for (var i = 0; i < gateways.length; i++) {
-        $(".gateways").append('<button gateway="'+gateways[i]+'" class="pure-button gw ' + gateways[i] + '">' + gateways[i].replace("WAN-", "") + '<div class="ping"></div></button><span style="margin-top:10px;margin-left:-35px" class="'+gateways[i]+'-pinginfo"><i class="material-icons">info</i></span>')
+        $(".gateways").append('<button gateway="' + gateways[i] + '" class="pure-button gw ' + gateways[i] + '">' + gateways[i].replace("WAN-", "") + '<div class="ping"></div></button><span style="margin-top:10px;margin-left:-35px" class="' +
+          gateways[i] + '-pinginfo"><i class="material-icons">info</i></span>')
       }
       $('.gw').prop('disabled', true);
       $(".gw").click(function() {
@@ -110,13 +165,73 @@ Webcam management = selects which camera to Sync
       $(".gw").prop('disabled', false);
     }
 
+    function getFailedMail() {
+      $.get("getFailed", function(getFailed) {
+        if (getFailed.includes("Error")) {
+          setTimeout(function() {
+            getFailedMail()
+          }, 1000)
+        } else {
+          let lines = getFailed.split('\n');
+          for (var ent = 3; ent < lines.length; ent++) {
+            $("#entries").append("<tr><td>" + lines[ent].split(',')[1] + "</td><td>" + lines[ent].split(',')[2] + "</td><td><span value=" + lines[ent].split(',')[0] + " class='clickablemail'>" + lines[ent].split(',')[0] + "</span></td></tr>")
+          }
+          $(".clickablemail").click(function(e) {
+            e.preventDefault();
+            $.get("getFailedMail?mailname="+e.target.innerHTML, function(retFailedMail) {
+              //$(".failedmailcontent").html("<span>hello</span>")
+              $(".failedmailcontent").html(retFailedMail.textAsHtml)
+              console.log(retFailedMail)
+            })
+            console.log(e.target.innerHTML)
+          })
+        }
+      })
+    }
+
+    function refreshSyncs() {
+      $.get("getSyncs", function(getSyncs) {
+        if (getSyncs.includes("Error")) {
+          console.log("cannot update syncs")
+        } else {
+          if (getSyncs.includes("mailsync")) {
+            $(".enableemailsync").attr("disabled", true)
+            $(".disableemailsync").attr("disabled", false)
+          } else {
+            $(".enableemailsync").attr("disabled", false)
+            $(".disableemailsync").attr("disabled", true)
+          }
+          if (getSyncs.includes("noonsync")) {
+            $(".enablenoonsync").attr("disabled", true)
+            $(".disablenoonsync").attr("disabled", false)
+          } else {
+            $(".enablenoonsync").attr("disabled", false)
+            $(".disablenoonsync").attr("disabled", true)
+          }
+          if (getSyncs.includes("webcamsync")) {
+            $(".enablewebcamsync").attr("disabled", true)
+            $(".disablewebcamsync").attr("disabled", false)
+          } else {
+            $(".enablewebcamsync").attr("disabled", false)
+            $(".disablewebcamsync").attr("disabled", true)
+          }
+        }
+
+      })
+
+      setTimeout(function() {
+        refreshSyncs()
+      }, 3000)
+    }
+
     function connect(network, gateway) {
       console.log("connecting " + network + " to " + gateway)
       $("." + network).attr("gateway", gateway)
       $.get("/set?network=" + network + "&gateway=" + gateway);
       drawLine(network)
     }
-    function getNetworks(){
+
+    function getNetworks() {
       //get firewallpolicy
       $.get("/getfirewallpolicy", function(currentfirewalldata) {
         if (typeof currentfirewalldata == "object") {
@@ -128,7 +243,7 @@ Webcam management = selects which camera to Sync
                   //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
                   if (currentfirewalldata[cur].status == undefined) {
                     $(".QNET").attr("gateway", networkdata.QNET.networks[i].name)
-                    drawLine("QNET")
+                    //drawLine("QNET")
                     $("#gwloader").html("")
                   }
                 }
@@ -140,7 +255,7 @@ Webcam management = selects which camera to Sync
                   //console.log("network firewallpolicy id for MEDIANET " + networkdata.MEDIANET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
                   if (currentfirewalldata[cur].status == undefined) {
                     $(".MEDIANET").attr("gateway", networkdata.MEDIANET.networks[i].name)
-                    drawLine("MEDIANET")
+                    //drawLine("MEDIANET")
                   }
                 }
               }
@@ -148,12 +263,14 @@ Webcam management = selects which camera to Sync
           })
         } else {
           var d = new Date();
-          n=d.toISOString();
-          addToNotification('error', 'Could not get firewall data', n, "Try to resolve by: <br>1) Reloading the page. <br>2) Ensuring you are on the same network as the fortigate (can you ping it?). <br>3) Contacting operations on skype chat group")
+          n = d.toISOString();
+          addToNotification('error', 'Could not get firewall data', n,
+            "Try to resolve by: <br>1) Reloading the page. <br>2) Ensuring you are on the same network as the fortigate (can you ping it?). <br>3) Contacting operations on skype chat group")
           console.log("could not get current firewalldata")
         }
       })
     }
+
     function drawLine(network) {
       let gateway = $("." + network).attr("gateway")
       console.log(network + " - " + gateway)
@@ -257,38 +374,49 @@ Webcam management = selects which camera to Sync
         }
       }
     }
-    function addReadButtonFunctionalityToNotifications(){
-      $(".closenotification").click(function(){
+
+    function addReadButtonFunctionalityToNotifications() {
+      $(".closenotification").click(function() {
         $(this).parent().remove()
         updateBadge()
       })
     }
+
     function addToNotification(type, title, subtitle, text) {
       let typestring, iconstring
-      if(type == "error")
-        typestring="errormessage"
-        iconstring="error"
+      if (type == "error")
+        typestring = "errormessage"
+      iconstring = "error"
       $("#notificationsdisplayer").prepend(
-        "<div class='notification unread'><div class='notificationbreak'></div><div class='closenotification'><i class='material-icons'>close</i></div><div class='"+typestring+"'><i class='material-icons'>"+iconstring+"</i></div><strong>"+title+"</strong><br><i>"+subtitle+"</i><br>"+text+"</div>"
+        "<div class='notification unread'><div class='notificationbreak'></div><div class='closenotification'><i class='material-icons'>close</i></div><div class='" + typestring + "'><i class='material-icons'>" + iconstring + "</i></div><strong>" +
+        title + "</strong><br><i>" + subtitle + "</i><br>" + text + "</div>"
       )
       addReadButtonFunctionalityToNotifications()
       updateBadge()
     }
-    function updateBadge(){
+
+    function updateBadge() {
       count = $("#notificationsdisplayer > .unread").length
       $("#badgecount").text(count);
     }
+
+    function getCams() {
+      $.get("/getcams", function(data) {
+        console.log(data)
+      })
+    }
+
     function refreshPings() {
       $.get('/networks', function(result) {
         getNetworks()
         let pings = result.pingtests
         for (key in pings) {
-          if(typeof(pings[key].ping)=="string"){
-            $("." + key + "-pinginfo").attr("title",pings[key].ping.replace(/\r?\n?[^\r\n]*$/,"").trim())
-            l=pings[key].ping.replace(/\r?\n?[^\r\n]*$/,"").trim().split(/\r\n|\r|\n/).length
-            $("." + key + " .ping").text(pings[key].ping.split(/\r\n|\r|\n/)[l-1].split("\/")[3]+"ms")
+          if (typeof(pings[key].ping) == "string") {
+            $("." + key + "-pinginfo").attr("title", pings[key].ping.replace(/\r?\n?[^\r\n]*$/, "").trim())
+            l = pings[key].ping.replace(/\r?\n?[^\r\n]*$/, "").trim().split(/\r\n|\r|\n/).length
+            $("." + key + " .ping").text(pings[key].ping.split(/\r\n|\r|\n/)[l - 1].split("\/")[3] + "ms")
           } else {
-            $("." + key + "-pinginfo").attr("title","down")
+            $("." + key + "-pinginfo").attr("title", "down")
             $("." + key + " .ping").text("down")
           }
         }
@@ -398,19 +526,23 @@ Webcam management = selects which camera to Sync
       width: 100%;
 
     }
-    .notificationbreak{
-      height:3px;
+
+    .notificationbreak {
+      height: 3px;
       background-color: grey;
-      width:100%;
+      width: 100%;
     }
+
     .notification .errormessage {
       color: red;
     }
+
     .closenotification {
       position: absolute;
-      right:15px;
+      right: 15px;
       cursor: pointer;
     }
+
     fieldset {
       color: white;
       margin: 0;
@@ -513,10 +645,12 @@ Webcam management = selects which camera to Sync
       padding-left: 10px;
       padding-right: 10px;
     }
-    #badgecount{
-      position:absolute;
-      bottom:0
+
+    #badgecount {
+      position: absolute;
+      bottom: 0
     }
+
     #configwindow {}
   </style>
 </head>
@@ -559,7 +693,7 @@ Webcam management = selects which camera to Sync
 
     </div>
   </fieldset>
-  <fieldset style="height:400px;overflow:scroll">
+  <fieldset style="height:400px;overflow:scroll;display:none">
 
     <div id="mailscanner" class="fstitle">
       Mail <span id="mailloader"> - loading</span>
@@ -584,7 +718,7 @@ Webcam management = selects which camera to Sync
     </div>
 
   </fieldset>
-  <fieldset id="syncs" class="fiddy">
+  <fieldset id="syncs" class="fiddy" style="display:none">
     <div class="fstitle">
       Manual Sync
     </div><br>
@@ -596,12 +730,47 @@ Webcam management = selects which camera to Sync
       <button style="flex: 1;" class="cammanual pure-button">Webcam Sync</button>
     </div>
   </fieldset>
-  <fieldset id="webcams" class="fiddy">
+  <fieldset id="webcams" class="fiddy" style="display:none">
     <div class="fstitle">
       Webcam Previews
     </div><br>
     <div class="inner" style="display: flex;flex-wrap:wrap">
-      <img style=" display: block;margin-left: auto;margin-right: auto; margin-bottom:20px" src="http://192.168.214.3/jpg/image.jpg" alt="">
+      <img id="webcam0" style="width:50%; display: block;margin-left: auto;margin-right: auto; margin-bottom:20px" src="" alt="">
+      <img id="webcam1" style="width:50%; display: block;margin-left: auto;margin-right: auto; margin-bottom:20px" src="" alt="">
+      <img id="webcam2" style="width:50%; display: block;margin-left: auto;margin-right: auto; margin-bottom:20px" src="" alt="">
+    </div>
+  </fieldset>
+  <fieldset id="legacy" class="fiddy">
+    <div class="fstitle">
+      Legacy CnC Functions
+    </div><br>
+    <div class="inner" style="">
+      <button disabled style="flex: 1;" class="enableemailsync pure-button">Enable Mail Sync</button>
+      <button disabled style="flex: 1;" class="disableemailsync pure-button">Disable Mail Sync</button>
+      <button disabled style="flex: 1;" class="enablewebcamsync pure-button">Enable Webcam Sync</button>
+      <button disabled style="flex: 1;" class="disablewebcamsync pure-button">Disable Webcam Sync</button>
+      <button disabled style="flex: 1;" class="enablenoonsync pure-button">Enable Noonreport Sync</button>
+      <button disabled style="flex: 1;" class="disablenoonsync pure-button">Disable Noonreport Sync</button>
+    </div>
+  </fieldset>
+  <fieldset id="maillist" class="fiddy">
+    <div class="fstitle">
+      Mail
+    </div><br>
+    <table style="margin-top:30px;width:580px;float:left">
+      <tr>
+        <thead>
+          <th style="width:100px">date</th>
+          <th style="width:50px">size</th>
+          <th>name</th>
+        </thead>
+        <tbody id="entries">
+
+        </tbody>
+      </tr>
+    </table>
+    <div class="failedmailcontent" style="float:left">
+
     </div>
   </fieldset>
 

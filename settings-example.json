@@ -1,16 +1,18 @@
 {
   "port":8080,
-  "cam1":"192.168.xx.xx",
-  "cam2":"192.168.xx.xx",
+  "cam":["http://192.168.214.3/jpg/image.jpg"],
   "mail":"192.168.xx.xx",
   "driveapi":"xxx",
   "drivecert":{},
   "drivepassword":"",
   "port":8080,
-  "fgip" : "",
-  "fguser" : "",
-  "fgpass" : "",
-  "mailurl" : "",
-  "mailuser" : "",
-  "mailpass" : ""
+  "fgip" : "192.168.219.254",
+  "fguser" : "admin",
+  "fgpass" : "admin",
+  "mailurl" : "https://mailscanner.example",
+  "mailuser" : "cncuser",
+  "mailpass" : "cncuser",
+  "localmailip" : "",
+  "localmailuser" : "",
+  "localmailpass" : ""
 }
