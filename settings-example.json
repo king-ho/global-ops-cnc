@@ -1,11 +1,10 @@
 {
-  "port":8080,
+  "port":80,
   "cam":["http://192.168.214.3/jpg/image.jpg"],
   "mail":"192.168.xx.xx",
   "driveapi":"xxx",
   "drivecert":{},
   "drivepassword":"",
-  "port":8080,
   "fgip" : "192.168.219.254",
   "fguser" : "admin",
   "fgpass" : "admin",
