@@ -213,6 +213,7 @@ let networks = {
          r.if = lines[j].split(" ")[2]
          r.sr = lines[j].split(" ")[8]
          r.tm = lines[j].split(" ")[0].replace(".0/24","")
+         intterfaces.push(r)
          for(key in networks.pingtests){
            if(networks.pingtests[key].ip.includes(r.tm)){
              networks.pingtests[key].src=r.sr
@@ -220,8 +221,7 @@ let networks = {
          }
        }
      }
-     //console.log(lines[7] + " : " +res)
-     //return res
+     console.log("INTERFACES: "+interfaces)
    });
  }
 //refreshpings()
