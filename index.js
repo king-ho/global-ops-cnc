@@ -368,7 +368,7 @@ app.get('/getfirewallpolicy', function(req, res) {
   }).then(function() {
     console.log("successfully connected to fg. getting current configuration.")
     ssh.execCommand('show firewall policy').then(function(result) {
-      console.log(result)
+      console.log("show firewall policy : "+result)
       let toret = extractPolicy(result.stdout)
       firewallpolicy = toret
       if (result.stderr)
