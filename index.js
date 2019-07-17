@@ -221,7 +221,7 @@ let networks = {
          }
        }
      }
-     console.log("INTERFACES: "+interfaces)
+     console.log("INTERFACES: "+JSON.stringify(interfaces))
    });
  }
 //refreshpings()
