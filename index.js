@@ -381,6 +381,31 @@ app.get('/getfirewallpolicy', function(req, res) {
     res.send("Error running show router policy")
   })
 })
+
+app.get('/getinterfaces', function(req, res) {
+  console.log("connecting to " + fgip + " as " + fguser)
+  ssh.connect({
+    host: fgip,
+    username: fguser,
+    password: fgpass
+  }).then(function() {
+    console.log("successfully connected to fg. getting current configuration.")
+    ssh.execCommand('show system interface').then(function(result) {
+      let toret = extractPolicy(result.stdout)
+      console.log(toret)
+      if (result.stderr)
+        console.log('STDERR: ' + result.stderr)
+      res.send(toret)
+    }).catch((error) => {
+      console.log("Error running show firewall policy: " + error)
+      res.send("Error running show firewall policy: " + error)
+    })
+  }).catch((error) => {
+    console.log("Error connecting to fortigate")
+    res.send("Error running show router policy")
+  })
+})
+
 /**
  * [return router policy]
  * @param  {object} req request object
@@ -687,6 +712,10 @@ function extractPolicy(rp) {
       for (j = 1; j < 100; j++) {
         if (b[i + j].indexOf("set comments") > -1) {
           listofconfigs[confignr].comments = b[i + j].replace("set comments", "").replace("\"", "").replace("\"", "").trim()
+        } else if (b[i + j].indexOf("set ip") > -1) {
+          listofconfigs[confignr].ip = b[i + j].replace("set ip", "").trim()
+        } else if (b[i + j].indexOf("set alias") > -1) {
+          listofconfigs[confignr].alias = b[i + j].replace("set alias", "").trim()
         } else if (b[i + j].indexOf("set status") > -1) {
           listofconfigs[confignr].status = b[i + j].replace("set status", "").trim()
         } else if (b[i + j].indexOf("set name") > -1) {
