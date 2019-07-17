@@ -713,11 +713,11 @@ function extractPolicy(rp) {
         if (b[i + j].indexOf("set comments") > -1) {
           listofconfigs[confignr].comments = b[i + j].replace("set comments", "").replace("\"", "").replace("\"", "").trim()
         } else if (b[i + j].indexOf("set ip") > -1) {
-          listofconfigs[confignr].ip = b[i + j].replace("set ip", "").trim()
+          listofconfigs[confignr].ip = b[i + j].replace("set ip", "").replace("\"", "").replace("\"", "").trim()
         } else if (b[i + j].indexOf("set alias") > -1) {
-          listofconfigs[confignr].alias = b[i + j].replace("set alias", "").trim()
+          listofconfigs[confignr].alias = b[i + j].replace("set alias", "").replace("\"", "").replace("\"", "").trim()
         } else if (b[i + j].indexOf("set status") > -1) {
-          listofconfigs[confignr].status = b[i + j].replace("set status", "").trim()
+          listofconfigs[confignr].status = b[i + j].replace("set status", "").replace("\"", "").replace("\"", "").trim()
         } else if (b[i + j].indexOf("set name") > -1) {
           listofconfigs[confignr].name = b[i + j].replace("set name", "").replace("\"", "").replace("\"", "").trim()
         } else if (b[i + j].indexOf("set output-device") > -1) {
