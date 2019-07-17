@@ -221,7 +221,7 @@ let networks = {
        }
      }
      //console.log(lines[7] + " : " +res)
-     return res
+     //return res
    });
  }
 //refreshpings()
