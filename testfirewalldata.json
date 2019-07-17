@@ -1,0 +1,293 @@
+{
+  "1": {
+    "nr": "1",
+    "name": "[ANTI-LOCKOUT]"
+  },
+  "2": {
+    "nr": "2",
+    "name": "[QNET-to-MAIL_SERVER]"
+  },
+  "3": {
+    "nr": "3",
+    "name": "[MAIL_SERVER-to-QNET]"
+  },
+  "4": {
+    "nr": "4",
+    "name": "[SHIPNET_PRINTERS-to-QNET]"
+  },
+  "5": {
+    "nr": "5",
+    "name": "[QNET-to-SHIPNET_PRINTERS]"
+  },
+  "6": {
+    "nr": "6",
+    "name": "[QNET-to-UNIFI_CAMERAS]"
+  },
+  "7": {
+    "nr": "7",
+    "name": "[RR_CLIENTS-to-QSHARE]"
+  },
+  "8": {
+    "nr": "8",
+    "name": "[QSHARE-to-RR_CLIENTS]"
+  },
+  "9": {
+    "nr": "9",
+    "name": "[SERIAL_SERVER-to-GL3]"
+  },
+  "10": {
+    "nr": "10",
+    "name": "[GL3-to-SERIAL_SERVER]"
+  },
+  "11": {
+    "nr": "11",
+    "name": "[MAIL_SERVER-to-SHORE]"
+  },
+  "12": {
+    "nr": "12",
+    "name": "[SHORE-to-MAIL_SERVER]"
+  },
+  "13": {
+    "nr": "13",
+    "name": "[SHIPNET-to-VOYAGER]"
+  },
+  "14": {
+    "nr": "14",
+    "name": "[VOYAGER-to-SHIPNET]"
+  },
+  "15": {
+    "nr": "15",
+    "name": "[SHIPNET-to-REGS4SHIPS]"
+  },
+  "16": {
+    "nr": "16",
+    "name": "[SHIPNET_AIS-to-MARINE_TRAFFIC]"
+  },
+  "17": {
+    "nr": "17",
+    "name": "[VIP-to-VPN]"
+  },
+  "18": {
+    "nr": "18",
+    "name": "[VPN-to-VIP]"
+  },
+  "19": {
+    "nr": "19",
+    "name": "[SHIPNET-to-VPN]"
+  },
+  "20": {
+    "nr": "20",
+    "name": "[VPN-TO-SHIPNET]",
+    "comments": "INSIDE-to-OUTSIDE"
+  },
+  "21": {
+    "nr": "21",
+    "name": "[QNET-to-SERIAL_SERVER]",
+    "comments": "Serial Server to QNET"
+  },
+  "22": {
+    "nr": "22",
+    "name": "[SERIAL_SERVER-to-QNET]",
+    "comments": "QNET to Serial Server"
+  },
+  "23": {
+    "nr": "23",
+    "name": "[SHIPNET-to-VSAT_NET]"
+  },
+  "24": {
+    "nr": "24",
+    "name": "[DENY: QNET-to-GL4]",
+    "comments": "DENY QNET to GL4"
+  },
+  "25": {
+    "nr": "25",
+    "name": "[DENY: MEDIANET-to-GL4]",
+    "comments": "DENY MEDIANET to GL4"
+  },
+  "26": {
+    "nr": "26",
+    "name": "[SHIPNET-to-SQUASHER]"
+  },
+  "27": {
+    "nr": "27",
+    "name": "[SQUASHER-to-SHIPNET]"
+  },
+  "28": {
+    "nr": "28",
+    "name": "[MEDIANET-to-MAIL_SERVER]"
+  },
+  "29": {
+    "nr": "29",
+    "name": "[MAIL_SERVER-to-MEDIANET]"
+  },
+  "30": {
+    "nr": "30",
+    "name": "[SHIPNET_PRINTERS-to-MEDIANET]"
+  },
+  "31": {
+    "nr": "31",
+    "name": "[MEDIANET-to-SHIPNET_PRINTERS]"
+  },
+  "100": {
+    "nr": "100",
+    "name": "[SHIPNET-to-VSAT_KU]"
+  },
+  "101": {
+    "nr": "101",
+    "name": "[SHIPNET-to-VSAT_FX]"
+  },
+  "102": {
+    "nr": "102",
+    "name": "[SHIPNET-to-3G]"
+  },
+  "103": {
+    "nr": "103",
+    "name": "[SHIPNET-to-4G]"
+  },
+  "104": {
+    "nr": "104",
+    "name": "[SHIPNET-to-FBB]"
+  },
+  "120": {
+    "nr": "120",
+    "name": "[DENY: QNET-to-VSAT_KU]",
+    "comments": "Block QNET-to-VSAT"
+  },
+  "121": {
+    "nr": "121",
+    "name": "[DENY: QNET-to-VSAT_FX]",
+    "comments": "QNET-to-VSAT-FX"
+  },
+  "122": {
+    "nr": "122",
+    "name": "[DENY: QNET-to-3G]",
+    "comments": "Block QNET to WAN"
+  },
+  "123": {
+    "nr": "123",
+    "name": "[DENY: QNET-to-4G]",
+    "comments": "Block QNET to WAN"
+  },
+  "124": {
+    "nr": "124",
+    "name": "[DENY: QNET-to-FBB]",
+    "comments": "Block QNET to WAN"
+  },
+  "125": {
+    "nr": "125",
+    "name": "[DENY: QNET-to-WIFI]",
+    "comments": "Block QNET to WAN"
+  },
+  "140": {
+    "nr": "140",
+    "name": "[DENY: MEDIANET-to-VSAT_KU]",
+    "comments": "Block MEDIANET-to-VSAT"
+  },
+  "141": {
+    "nr": "141",
+    "name": "[DENY: MEDIANET-to-VSAT_FX]",
+    "comments": "Block MEDIANET-to-VSAT-FX"
+  },
+  "142": {
+    "nr": "142",
+    "name": "[DENY: MEDIANET-to-3G]",
+    "comments": "Block MEDIANET to WAN"
+  },
+  "143": {
+    "nr": "143",
+    "name": "[DENY: MEDIANET-to-4G]",
+    "comments": "Block MEDIANET to WAN"
+  },
+  "144": {
+    "nr": "144",
+    "name": "[DENY: MEDIANET-to-FBB]",
+    "comments": "Block MEDIANET to WAN"
+  },
+  "145": {
+    "nr": "145",
+    "name": "[DENY: MEDIANET-to-WIFI]",
+    "comments": "Block MEDIANET to WAN"
+  },
+  "160": {
+    "nr": "160",
+    "name": "[QNET-to-VSAT_KU]",
+    "status": "disable",
+    "comments": "Enable this to use VSAT - QNET via VSAT"
+  },
+  "161": {
+    "nr": "161",
+    "name": "[QNET-to-VSAT_FX]",
+    "comments": "QNET-via-VSAT-FX"
+  },
+  "162": {
+    "nr": "162",
+    "name": "[QNET-to-3G]",
+    "status": "disable",
+    "comments": "Enable this to use 3G - QNET via 3G"
+  },
+  "163": {
+    "nr": "163",
+    "name": "[QNET-to-4G]",
+    "status": "disable",
+    "comments": "Enable this to use 4G - QNET via 4G"
+  },
+  "164": {
+    "nr": "164",
+    "name": "[QNET-to-FBB]",
+    "status": "disable",
+    "comments": "Enable this to use FBB - QNET via FBB"
+  },
+  "165": {
+    "nr": "165",
+    "name": "[QNET-to-VPN]",
+    "status": "disable",
+    "comments": "Enable this to access Internet via VPN"
+  },
+  "166": {
+    "nr": "166",
+    "name": "[QNET-to-WIFI]",
+    "status": "disable",
+    "comments": "Enable this to use WIFI - QNET via WIFI"
+  },
+  "180": {
+    "nr": "180",
+    "name": "[MEDIANET-to-VSAT_KU]",
+    "status": "disable",
+    "comments": "Enable this to use VSAT_KU - MEDIANET via VSAT"
+  },
+  "181": {
+    "nr": "181",
+    "name": "[MEDIANET-to-VSAT-FX]",
+    "comments": "Enable this to use VSAT - MEDIANET via VSAT-FX"
+  },
+  "182": {
+    "nr": "182",
+    "name": "[MEDIANET-to-3G]",
+    "status": "disable",
+    "comments": "Enable this to use VSAT - MEDIANET via 3G"
+  },
+  "183": {
+    "nr": "183",
+    "name": "[MEDIANET-to-4G]",
+    "status": "disable",
+    "comments": "Enable this to use 4G - MEDIANET via 4G"
+  },
+  "184": {
+    "nr": "184",
+    "name": "[MEDIANET-to-FBB]",
+    "status": "disable",
+    "comments": "Enable this to use VSAT - MEDIANET via FBB"
+  },
+  "185": {
+    "nr": "185",
+    "name": "[MEDIANET-to-VPN]",
+    "status": "disable",
+    "comments": "Enable this to access Internet via VPN"
+  },
+  "186": {
+    "nr": "186",
+    "name": "[MEDIANET-to-WIFI]",
+    "status": "disable",
+    "comments": "Enable this to use VSAT - MEDIANET via FBB"
+  }
+}

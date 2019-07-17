@@ -19,6 +19,7 @@ var request = require("request").defaults({
 
 // Set details for fortigate and mailwatcher here
 let rawdata = fs.readFileSync('settings.json');
+let testdata = fs.readFileSync('testfirewalldata.json');
 rawdata = JSON.parse(rawdata);
 let port = rawdata.port
 let fgip = rawdata.fgip
@@ -39,7 +40,7 @@ let pagesparsed = 0
 let expectedpages = 0
 let routerpolicy
 let firewallpolicy
-
+let interfaces = []
 /**
  * set bash commands
  * @type {Object}
@@ -193,13 +194,43 @@ let networks = {
  * @param  {object} res result object
  * @return {object}     object with network policy references
  */
-refreshpings()
+ getInterfaces()
+ function getInterfaces(){
+   dir = exec("ip route", function(err, stdout, stderr) {
+     if (err) {
+       console.log(err)
+       return err
+     }
+     if (stderr) {
+       console.log(stderr)
+       return stderr
+     }
+     var lines = stdout.split(/\r\n|\r|\n/)
+     for(var j = 0 ; j < lines.length ; j++){
+       if(!lines[j].includes("default")){
+         let r = {}
+         r.nw = lines[j].split(" ")[0]
+         r.if = lines[j].split(" ")[2]
+         r.sr = lines[j].split(" ")[8]
+         r.tm = lines[j].split(" ")[0].replace(".0/24","")
+         for(key in networks.pingtests){
+           if(network.pingtests[key].includes(r.tm)){
+             network.pingtests[key].src=r.sr
+           }
+         }
+       }
+     }
+     //console.log(lines[7] + " : " +res)
+     return res
+   });
+ }
+//refreshpings()
 //For testship : ping -S 172.20.214.4 8.8.8.8 pushes ping to use VSAT interface in testship which has a 700ms limiter on it u[p and down (1400ms total)
 async function refreshpings() {
   fs.readFileSync('settings.json');
   let pingnets = networks.pingtests;
   for (key in pingnets) {
-    await pingkypromise(key, pingnets[key], 'google.com').then(function(response) {
+    await pings(key, pingnets[key], '8.8.8.8').then(function(response) {
 
     }, function(error) {
       console.error("Failed!", error);
@@ -208,6 +239,23 @@ async function refreshpings() {
   setTimeout(function() {
     refreshpings()
   }, 10000)
+}
+//pings("192.168.43.22")
+async function pings(name, interface, target) {
+  dir = await exec("ping -c 3 -I "+ interface +" "+target, function(err, stdout, stderr) {
+    if (err) {
+      console.log(err)
+      return err
+    }
+    if (stderr) {
+      console.log(stderr)
+      return stderr
+    }
+    var lines = stdout.split(/\r\n|\r|\n/)
+    var res = parseFloat(lines[7].split(" = ")[1].replace("ms", "").split("\/")[1])
+    //console.log(lines[7] + " : " +res)
+    return res
+  });
 }
 
 function pingkypromise(name, gateway, toping) {
@@ -319,7 +367,7 @@ app.get('/getfirewallpolicy', function(req, res) {
     console.log("successfully connected to fg. getting current configuration.")
     ssh.execCommand('show firewall policy').then(function(result) {
       let toret = extractPolicy(result.stdout)
-      firewallpolicy= toret
+      firewallpolicy = toret
       if (result.stderr)
         console.log('STDERR: ' + result.stderr)
       res.send(toret)
@@ -347,7 +395,7 @@ app.get('/getrouterpolicy', function(req, res) {
   }).then(function() {
     ssh.execCommand('show router policy').then(function(result) {
       let toret = extractPolicy(result.stdout)
-      routerpolicy=toret
+      routerpolicy = toret
       if (result.stderr)
         console.log('STDERR: ' + result.stderr)
       res.send(toret)
@@ -547,7 +595,7 @@ app.get('/getFailed', async function(req, res) {
 
 app.get('/getFailedMail', async function(req, res) {
   let mailname = req.query.mailname
-  await doMailCommand(`cat /mail/aft/messages/.failed/`+mailname).then(async function(qwe) {
+  await doMailCommand(`cat /mail/aft/messages/.failed/` + mailname).then(async function(qwe) {
     let parsed = await simpleParser(qwe);
     res.send(parsed)
 
@@ -750,7 +798,7 @@ end`
   }).then(function() {
     ssh.execCommand(fwstring).then(function(result) {
       let toret = extractPolicy(result.stdout)
-      firewallpolicy=toret
+      firewallpolicy = toret
       if (result.stderr)
         console.log('STDERR: ' + result.stderr)
     }).catch((error) => {
@@ -759,7 +807,7 @@ end`
 
     ssh.execCommand(routestring).then(function(result) {
       let toret = extractPolicy(result.stdout)
-      routerpolicy=toret
+      routerpolicy = toret
       if (result.stderr)
         console.log('STDERR: ' + result.stderr)
     }).catch((error) => {
