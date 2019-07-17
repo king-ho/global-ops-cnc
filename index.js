@@ -215,7 +215,7 @@ let networks = {
          r.tm = lines[j].split(" ")[0].replace(".0/24","")
          interfaces.push(r)
          for(key in networks.pingtests){
-           if(networks.pingtests[key].ip.includes(r.tm)){
+           if(networks.pingtests[key].ip.includes(r.tm) && r.sr != undefined){
              console.log("found "+r.sr+" matches "+networks.pingtests[key].ip)
              networks.pingtests[key].src=r.sr
            }
