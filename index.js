@@ -296,6 +296,7 @@ app.get('/getping', function(req, res) {
   res.send(networks)
 })
 app.get('/networks', function(req, res) {
+  getInterfaces()
   res.send(networks)
 })
 
