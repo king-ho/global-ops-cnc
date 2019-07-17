@@ -196,7 +196,7 @@ let networks = {
  */
  getInterfaces()
  function getInterfaces(){
-   dir = exec("/usr/bin/ip route", function(err, stdout, stderr) {
+   dir = exec("/usr/sbin/ip route", function(err, stdout, stderr) {
      if (err) {
        console.log(err)
        return err
