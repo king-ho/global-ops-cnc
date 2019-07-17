@@ -241,7 +241,7 @@ Webcam management = selects which camera to Sync
             for (var i = 0; i < networkdata.QNET.networks.length; i++) {
               for (var cur in currentfirewalldata) {
                 if (networkdata.QNET.networks[i].firewallpolicy == cur) {
-                  //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
+                  console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
                   if (currentfirewalldata[cur].status == undefined) {
                     $(".QNET").attr("gateway", networkdata.QNET.networks[i].name)
                     drawLine("QNET")
