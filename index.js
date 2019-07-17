@@ -706,7 +706,7 @@ function extractPolicy(rp) {
   let listofconfigs = {}
   for (var i = 0; i < b.length; i++) {
     if (b[i].indexOf("edit") > -1) {
-      confignr = b[i].replace("edit", "").replace("\"", "").replace("\"", "")..trim()
+      confignr = b[i].replace("edit", "").replace("\"", "").replace("\"", "").trim()
       listofconfigs[confignr] = {}
       listofconfigs[confignr].nr = confignr.replace("\"", "").replace("\"", "")
       for (j = 1; j < 100; j++) {
