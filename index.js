@@ -222,7 +222,7 @@ let networks = {
          }
        }
      }
-     console.log("INTERFACES: "+JSON.stringify(interfaces))
+     //console.log("INTERFACES: "+JSON.stringify(interfaces))
    });
  }
 //refreshpings()
@@ -243,7 +243,7 @@ async function refreshpings() {
 }
 //pings("192.168.43.22")
 async function pings(name, interface, target) {
-  dir = await exec("ping -c 3 -I "+ interface +" "+target, function(err, stdout, stderr) {
+  dir = await exec("ping -c 3 -S "+ interface +" "+target, function(err, stdout, stderr) {
     if (err) {
       console.log(err)
       return err

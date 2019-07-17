@@ -141,6 +141,7 @@ Webcam management = selects which camera to Sync
 
       })
       gateways = ["WAN-WIFI", "WAN-VSAT-FX", "WAN-VSAT-KU", "WAN-FBB", "WAN-4G", "WAN-3G"]
+      //gateways = ["VSAT","4G","FBB","3G","WiFi","VSAT-FX","IridiumPilot","EMEA","AMER"]
       for (var i = 0; i < gateways.length; i++) {
         $(".gateways").append('<button gateway="' + gateways[i] + '" class="pure-button gw ' + gateways[i] + '">' + gateways[i].replace("WAN-", "") + '<div class="ping"></div></button><span style="margin-top:10px;margin-left:-35px" class="' +
           gateways[i] + '-pinginfo"><i class="material-icons">info</i></span>')
@@ -243,7 +244,7 @@ Webcam management = selects which camera to Sync
                   //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
                   if (currentfirewalldata[cur].status == undefined) {
                     $(".QNET").attr("gateway", networkdata.QNET.networks[i].name)
-                    //drawLine("QNET")
+                    drawLine("QNET")
                     $("#gwloader").html("")
                   }
                 }
@@ -255,7 +256,7 @@ Webcam management = selects which camera to Sync
                   //console.log("network firewallpolicy id for MEDIANET " + networkdata.MEDIANET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
                   if (currentfirewalldata[cur].status == undefined) {
                     $(".MEDIANET").attr("gateway", networkdata.MEDIANET.networks[i].name)
-                    //drawLine("MEDIANET")
+                    drawLine("MEDIANET")
                   }
                 }
               }
