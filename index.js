@@ -214,7 +214,7 @@ let networks = {
          r.sr = lines[j].split(" ")[8]
          r.tm = lines[j].split(" ")[0].replace(".0/24","")
          for(key in networks.pingtests){
-           if(network.pingtests[key].includes(r.tm)){
+           if(network.pingtests[key].ip.includes(r.tm)){
              network.pingtests[key].src=r.sr
            }
          }
