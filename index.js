@@ -216,7 +216,7 @@ let networks = {
          interfaces.push(r)
          for(key in networks.pingtests){
            if(networks.pingtests[key].ip.includes(r.tm)){
-             console("found "+r.sr+" matches "+networks.pingtests[key].ip)
+             console.log("found "+r.sr+" matches "+networks.pingtests[key].ip)
              networks.pingtests[key].src=r.sr
            }
          }
