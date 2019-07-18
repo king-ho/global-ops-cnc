@@ -18,6 +18,15 @@ Unifying the control of ships networking, file-sharing, mail-curation, wifi-user
 8. `npm install forever-service -g` installs forever-service globally to create forever services
 9. `forever-service install cnc --start --script /opt/global-ops-cnc/index.js` starts the service (for reboots)
 10. open port 8080 or whichever port specified in `settings.json`
+11. generate privatekey on CnC without password `ssh-keygen`
+12. print out public-key to copy to fortigate `more /root/.ssh/id_rsa.pub`. Important: the " ssh-rsa" key is one linemake sure it is one line when you copy/paste to FortiGate. e.g.:
+ssh-rsa AAAAB3N...1KljpiH9aQ== root@here.local
+13. add this public single line string to fortigat by logging in via ssh then:
+    # config system admin
+    # edit admin
+    # set ssh-public-key1 "[value from more /root/.ssh/id_rsa.pub]"
+    # end
+14. test connection `ssh admin@fortigate` and you shouldnt need to enter password to log in
 
 ### Usage:
 In your browser navigate to whatever IP of the machine you are running on, or assign a DNS entry to that ip, followed by the port specified in `settings.json`. Use the admin password specified in `settings.json`.

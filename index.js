@@ -359,6 +359,19 @@ app.get('/syncwebcam', function(req, res) {
  * @param  {object} res Result object
  * @return {string}     String
  */
+app.get('fw',function(req,res){
+  execdir = exec("ssh admin@192.168.214.254 'show route policy'", function(err, stdout, stderr) {
+    if(err){
+      res.send(err)
+    }
+    if(stderr){
+      res.send(stderr)
+    }
+    if(stdout){
+      res.send(stdout)
+    }
+  })
+})
 app.get('/getfirewallpolicy', function(req, res) {
   console.log("connecting to " + fgip + " as " + fguser)
   ssh.connect({
