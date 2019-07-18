@@ -37,6 +37,7 @@ Webcam management = selects which camera to Sync
     let networks
     let gateways
     let target
+    let settings = {}
 
     jQuery(document).ready(function() {
       //refreshPings()
@@ -231,7 +232,30 @@ Webcam management = selects which camera to Sync
       $.get("/set?network=" + network + "&gateway=" + gateway);
       drawLine(network)
     }
-
+    mapRouteToFirewall()
+    function mapRouteToFirewall(){
+      $.get("/getfirewallpolicy", function(fwdata) {
+        console.log("gotfw for mapping "+ fwdata)
+        if (typeof fwdata == "object") {
+          $.get("/getrouterpolicy", function(rdata) {
+            console.log("gotrouting for mapping")
+            for(var j = 0 ; j < networks.length ; j++ ){
+              console.log("mapping "+networks[j])
+              for(fwnr in fwdata){
+                if(fwdata[fwnr].name.includes(networks[j])){
+                  settings[fwdata[fwnr].name]["fw"]=fwdata[fwnr].nr
+                }
+              }
+              for(rnr in rdata){
+                if(rdata[rnr].comments.includes(networks[j])){
+                  settings[rdata[rnr].comments]["rp"]=rdata[rnr].nr
+                }
+              }
+            }
+          })
+        }
+      })
+    }
     function getNetworks() {
       //get firewallpolicy
       $.get("/getfirewallpolicy", function(currentfirewalldata) {

@@ -13,5 +13,18 @@
   "mailpass" : "cncuser",
   "localmailip" : "",
   "localmailuser" : "",
-  "localmailpass" : ""
+  "localmailpass" : "",
+  "networks":[
+    "QNET",
+    "MEDIANET",
+    "SHIPNET"
+  ],
+  "gateways":[
+    "VSAT-FX",
+    "VSAT_KU",
+    "WIFI",
+    "3G",
+    "4G",
+    "FBB"
+  ]
 }
