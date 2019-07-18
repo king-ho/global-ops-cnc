@@ -37,7 +37,7 @@ Webcam management = selects which camera to Sync
     let networks
     let gateways
     let target
-    let settings = {}
+    let settings = []
 
     jQuery(document).ready(function() {
       //refreshPings()
@@ -243,12 +243,12 @@ Webcam management = selects which camera to Sync
               console.log("mapping "+networks[j])
               for(fwnr in fwdata){
                 if(fwdata[fwnr].name.includes(networks[j])){
-                  settings[fwdata[fwnr].name]["fw"]=fwdata[fwnr].nr
+                  settings[fwdata[fwnr].name+"--fw"]=fwdata[fwnr].nr
                 }
               }
               for(rnr in rdata){
                 if(rdata[rnr].comments.includes(networks[j])){
-                  settings[rdata[rnr].comments]["rp"]=rdata[rnr].nr
+                  settings[rdata[rnr].comments+"--rp"]=rdata[rnr].nr
                 }
               }
             }
