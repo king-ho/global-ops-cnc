@@ -565,6 +565,11 @@ app.get('/isAutosyncCronSet', async function(req, res) {
 })
 
 // Mail sync management
+app.get('/manualSync', async function(req, res) {
+  await doMailCommand("sh /gp/scripts/admin/do_sync.sh").then(function(qwe) {
+    res.send(qwe)
+  })
+})
 app.get('/genMailCron', async function(req, res) {
   await doMailCommand("touch /etc/cron.d/mailsync && echo '*/5 * * * * root /gp/scripts/aft/aft-client.sh ship2shore-email > /dev/null' >> /etc/cron.d/mailsync").then(function(qwe) {
     res.send(qwe)

@@ -44,7 +44,13 @@ Webcam management = selects which camera to Sync
       refreshSyncs()
       //getCams()
       getFailedMail()
-
+      $(".manualsync").click(function(e) {
+        e.preventDefault();
+        console.log("clicked")
+        $.get("/manualSync", function(data) {
+          alert(data)
+        })
+      })
       $(".enableemailsync").click(function(e) {
         e.preventDefault();
         console.log("clicked")
@@ -190,7 +196,29 @@ Webcam management = selects which camera to Sync
         }
       })
     }
-
+    function getQueuedMail() {
+      $.get("getQueued", function(getFailed) {
+        if (getFailed.includes("Error")) {
+          setTimeout(function() {
+            getFailedMail()
+          }, 1000)
+        } else {
+          let lines = getFailed.split('\n');
+          for (var ent = 3; ent < lines.length; ent++) {
+            $("#entries").append("<tr><td>" + lines[ent].split(',')[1] + "</td><td>" + lines[ent].split(',')[2] + "</td><td><span value=" + lines[ent].split(',')[0] + " class='clickablemail'>" + lines[ent].split(',')[0] + "</span></td></tr>")
+          }
+          $(".clickablemail").click(function(e) {
+            e.preventDefault();
+            $.get("getFailedMail?mailname="+e.target.innerHTML, function(retFailedMail) {
+              //$(".failedmailcontent").html("<span>hello</span>")
+              $(".failedmailcontent").html(retFailedMail.textAsHtml)
+              console.log(retFailedMail)
+            })
+            console.log(e.target.innerHTML)
+          })
+        }
+      })
+    }
     function refreshSyncs() {
       $.get("getSyncs", function(getSyncs) {
         if (getSyncs.includes("Error")) {
@@ -770,6 +798,7 @@ Webcam management = selects which camera to Sync
       Legacy CnC Functions
     </div><br>
     <div class="inner" style="">
+      <button style="flex: 1;" class="manualsync pure-button">Manual Sync</button><br>
       <button disabled style="flex: 1;" class="enableemailsync pure-button">Enable Mail Sync</button>
       <button disabled style="flex: 1;" class="disableemailsync pure-button">Disable Mail Sync</button><br>
       <button disabled style="flex: 1;" class="enablewebcamsync pure-button">Enable Webcam Sync</button>
@@ -795,6 +824,21 @@ Webcam management = selects which camera to Sync
       </tr>
     </table>
     <div class="failedmailcontent" style="float:left">
+
+    </div>
+    <table style="margin-top:30px;width:580px;float:left">
+      <tr>
+        <thead>
+          <th style="width:100px">date</th>
+          <th style="width:50px">size</th>
+          <th>name</th>
+        </thead>
+        <tbody id="queuedentries">
+
+        </tbody>
+      </tr>
+    </table>
+    <div class="queuedmailcontent" style="float:left">
 
     </div>
   </fieldset>
