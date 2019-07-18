@@ -359,7 +359,7 @@ app.get('/syncwebcam', function(req, res) {
  * @param  {object} res Result object
  * @return {string}     String
  */
-app.get('fw', function(req,res){
+app.get('/fw', function(req,res){
   execdir = exec("ssh admin@192.168.214.254 'show route policy'", function(err, stdout, stderr) {
     if(err){
       res.send(err)
