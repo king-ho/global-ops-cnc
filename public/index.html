@@ -205,13 +205,13 @@ Webcam management = selects which camera to Sync
         } else {
           let lines = getFailed.split('\n');
           for (var ent = 3; ent < lines.length; ent++) {
-            $("#entries").append("<tr><td>" + lines[ent].split(',')[1] + "</td><td>" + lines[ent].split(',')[2] + "</td><td><span value=" + lines[ent].split(',')[0] + " class='clickablemail'>" + lines[ent].split(',')[0] + "</span></td></tr>")
+            $("#queuedentries").append("<tr><td>" + lines[ent].split(',')[1] + "</td><td>" + lines[ent].split(',')[2] + "</td><td><span value=" + lines[ent].split(',')[0] + " class='clickablemail'>" + lines[ent].split(',')[0] + "</span></td></tr>")
           }
           $(".clickablemail").click(function(e) {
             e.preventDefault();
-            $.get("getFailedMail?mailname="+e.target.innerHTML, function(retFailedMail) {
+            $.get("getQueueddMail?mailname="+e.target.innerHTML, function(retQueuedMail) {
               //$(".failedmailcontent").html("<span>hello</span>")
-              $(".failedmailcontent").html(retFailedMail.textAsHtml)
+              $(".queuedmailcontent").html(retQueuedMail.textAsHtml)
               console.log(retFailedMail)
             })
             console.log(e.target.innerHTML)

@@ -629,7 +629,7 @@ app.get('/getSyncs', async function(req, res) {
 
 // get Mail queues
 app.get('/getOutgoing', async function(req, res) {
-  await doMailCommand("ls -Alh /mail/xsmtp/messages/").then(function(qwe) {
+  await doMailCommand(`ls -Alh /mail/xsmtp/messages/| awk '{if(NR==1){print "FileName, ctime, Size, Access";}else{print  $9 "," $6 " " $7 " " $8 "," $5 "," $1;}}'`).then(function(qwe) {
     res.send(qwe)
   })
 })
@@ -642,6 +642,14 @@ app.get('/getFailed', async function(req, res) {
 app.get('/getFailedMail', async function(req, res) {
   let mailname = req.query.mailname
   await doMailCommand(`cat /mail/aft/messages/.failed/` + mailname).then(async function(qwe) {
+    let parsed = await simpleParser(qwe);
+    res.send(parsed)
+
+  })
+})
+app.get('/getQueuedMail', async function(req, res) {
+  let mailname = req.query.mailname
+  await doMailCommand(`cat /mail/xsmtp/messages/` + mailname).then(async function(qwe) {
     let parsed = await simpleParser(qwe);
     res.send(parsed)
 
