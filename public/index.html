@@ -29,6 +29,9 @@ Webcam management = selects which camera to Sync
       width: 1px;
       white-space: nowrap;
     }
+    .inner button{
+      width:200px;
+    }
   </style>
 
   <!-- Connect your elements like in this example -->
@@ -44,6 +47,7 @@ Webcam management = selects which camera to Sync
       refreshSyncs()
       //getCams()
       getFailedMail()
+      getQueuedMail()
       $(".manualsync").click(function(e) {
         e.preventDefault();
         console.log("clicked")
@@ -197,14 +201,14 @@ Webcam management = selects which camera to Sync
       })
     }
     function getQueuedMail() {
-      $.get("getQueued", function(getFailed) {
-        if (getFailed.includes("Error")) {
+      $.get("getQueued", function(getQueued) {
+        if (getQueued.includes("Error")) {
           setTimeout(function() {
             getFailedMail()
           }, 1000)
         } else {
-          let lines = getFailed.split('\n');
-          for (var ent = 3; ent < lines.length; ent++) {
+          let lines = getQueued.split('\n');
+          for (var ent = 1; ent < lines.length; ent++) {
             $("#queuedentries").append("<tr><td>" + lines[ent].split(',')[1] + "</td><td>" + lines[ent].split(',')[2] + "</td><td><span value=" + lines[ent].split(',')[0] + " class='clickablemail'>" + lines[ent].split(',')[0] + "</span></td></tr>")
           }
           $(".clickablemail").click(function(e) {

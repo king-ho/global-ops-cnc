@@ -628,7 +628,7 @@ app.get('/getSyncs', async function(req, res) {
 })
 
 // get Mail queues
-app.get('/getOutgoing', async function(req, res) {
+app.get('/getQueued', async function(req, res) {
   await doMailCommand(`ls -Alh /mail/xsmtp/messages/| awk '{if(NR==1){print "FileName, ctime, Size, Access";}else{print  $9 "," $6 " " $7 " " $8 "," $5 "," $1;}}'`).then(function(qwe) {
     res.send(qwe)
   })
@@ -638,7 +638,18 @@ app.get('/getFailed', async function(req, res) {
     res.send(qwe)
   })
 })
-
+app.get('/update'. function(rew,res){
+  dir = exec("cd /root/global-ops-cnc && git pull && forever restartall", function(err, stdout, stderr) {
+    if (err) {
+      console.log(err)
+      return err
+    }
+    if (stderr) {
+      console.log(stderr)
+      return stderr
+    }
+  });
+})
 app.get('/getFailedMail', async function(req, res) {
   let mailname = req.query.mailname
   await doMailCommand(`cat /mail/aft/messages/.failed/` + mailname).then(async function(qwe) {
