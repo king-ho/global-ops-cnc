@@ -805,7 +805,7 @@ async function genSsh(ser, user, pass, command) {
     password: pass
   }).then(function() {
     console.log("Connected to " + ser)
-    ssh.execCommand(command).then(function(result) {
+    ssh.execCommand(command+" ; exit").then(function(result) {
       if (result.stderr) {
         console.log('STDERR: ' + result.stderr)
         return result.stderr
@@ -866,7 +866,7 @@ end`
     username: fguser,
     password: fgpass
   }).then(function() {
-    ssh.execCommand(fwstring).then(function(result) {
+    ssh.execCommand(fwstring+" ; exit").then(function(result) {
       let toret = extractPolicy(result.stdout)
       firewallpolicy = toret
       if (result.stderr)
@@ -875,7 +875,7 @@ end`
       console.log("Error setting firewall policies: " + error)
     })
 
-    ssh.execCommand(routestring).then(function(result) {
+    ssh.execCommand(routestring+" ; exit").then(function(result) {
       let toret = extractPolicy(result.stdout)
       routerpolicy = toret
       if (result.stderr)
