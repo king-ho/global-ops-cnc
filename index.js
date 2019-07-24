@@ -674,7 +674,7 @@ app.get('/getQueuedMail', async function(req, res) {
  * @return {type}  description
  */
 async function doMailCommand(command) {
-  console.log("localmailip"+localmailip + " | localmailuser "+ localmailuser)
+  //console.log("localmailip"+localmailip + " | localmailuser "+ localmailuser)
   return new Promise(resolve => {
     ssh.connect({
       host: localmailip,
@@ -682,7 +682,7 @@ async function doMailCommand(command) {
       password: localmailpass
     }).then(function() {
       console.log("Running " + command + " on " + localmailip)
-      ssh.execCommand(command).then(function(result) {
+      ssh.execCommand(command+" ; exit").then(function(result) {
         if (result.stderr != '') {
           resolve('Error STDERR: ' + result.stderr)
         }

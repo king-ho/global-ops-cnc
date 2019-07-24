@@ -132,13 +132,13 @@ Webcam management = selects which camera to Sync
       //get firewallpolicy
       //getNetworks()
 
-      $.get("/refreshmail", function(refreshdata) {
-        target = refreshdata.nummails
-        if (refreshdata.status == "refreshed") {
-          console.log(refreshdata.nummails)
-          getmails()
-        }
-      });
+      // $.get("/refreshmail", function(refreshdata) {
+      //   target = refreshdata.nummails
+      //   if (refreshdata.status == "refreshed") {
+      //     console.log(refreshdata.nummails)
+      //     getmails()
+      //   }
+      // });
       svgContainer = d3.select("body").append("svg")
         .attr("width", "100%")
         .attr("height", "100%")
