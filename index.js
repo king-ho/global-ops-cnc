@@ -666,6 +666,12 @@ app.get('/getQueuedMail', async function(req, res) {
 
   })
 })
+app.get('/getMem', async function(req, res) {
+  await doMailCommand(`free -h`).then(async function(qwe) {
+    qwe="Total: "+qwe.trim().split("\n")[1].trim().split(/\s+/)[1]+"<br>Used: "+qwe.trim().split("\n")[1].trim().split(/\s+/)[2]+"<br>Free: "+qwe.trim().split("\n")[1].trim().split(/\s+/)[3]+"<br>TotalSwap: "+qwe.trim().split("\n")[1].trim().split(/\s+/)[4]+"<br>UsedSwap: "+qwe.trim().split("\n")[1].trim().split(/\s+/)[5]+"<br>FreeSwap: "+qwe.trim().split("\n")[1].trim().split(/\s+/)[6]
+    res.send(qwe)
+  })
+})
 // ------ Helper functions
 
 /**

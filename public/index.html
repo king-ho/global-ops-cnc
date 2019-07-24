@@ -48,6 +48,7 @@ Webcam management = selects which camera to Sync
       //getCams()
       getQueuedMail()
       getFailedMail()
+      getMem()
       $(".manualsync").click(function(e) {
         e.preventDefault();
         console.log("clicked")
@@ -179,7 +180,14 @@ Webcam management = selects which camera to Sync
     function selectNetwork(gateway) {
       $(".gw").prop('disabled', false);
     }
-
+    function getMem(){
+        $.get("/getMem", function(getMem) {
+          $("#configdisplayer").html(getMem)
+        })
+        setTimeout(function(){
+          getMem()
+        },4000)
+    }
     function getFailedMail() {
       $.get("getFailed", function(getFailed) {
         if (getFailed.includes("Error")) {
