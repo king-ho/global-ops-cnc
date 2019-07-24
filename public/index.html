@@ -43,9 +43,9 @@ Webcam management = selects which camera to Sync
     let target
 
     jQuery(document).ready(function() {
-      refreshPings()
+      //refreshPings()
       refreshSyncs()
-      getCams()
+      //getCams()
       getQueuedMail()
       getFailedMail()
       $(".manualsync").click(function(e) {
@@ -233,7 +233,7 @@ Webcam management = selects which camera to Sync
     }
 
     function refreshSyncs() {
-      $.get("getSyncs", function(getSyncs) {
+      $.get("/getSyncs", function(getSyncs) {
         if (getSyncs.includes("Error")) {
           console.log("cannot update syncs")
         } else {
