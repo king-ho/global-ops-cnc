@@ -638,7 +638,7 @@ app.get('/getFailed', async function(req, res) {
     res.send(qwe)
   })
 })
-app.get('/update'. function(rew,res){
+app.get('/update', function(rew,res){
   dir = exec("cd /root/global-ops-cnc && git pull && forever restartall", function(err, stdout, stderr) {
     if (err) {
       console.log(err)
