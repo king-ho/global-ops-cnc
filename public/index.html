@@ -29,6 +29,9 @@ Webcam management = selects which camera to Sync
       width: 1px;
       white-space: nowrap;
     }
+    .inner button{
+      width:200px;
+    }
   </style>
 
   <!-- Connect your elements like in this example -->
@@ -37,13 +40,21 @@ Webcam management = selects which camera to Sync
     let networks
     let gateways
     let target
+    let settings = []
 
     jQuery(document).ready(function() {
-      refreshPings()
+      //refreshPings()
       refreshSyncs()
-      getCams()
+      //getCams()
       getFailedMail()
-
+      getQueuedMail()
+      $(".manualsync").click(function(e) {
+        e.preventDefault();
+        console.log("clicked")
+        $.get("/manualSync", function(data) {
+          alert(data)
+        })
+      })
       $(".enableemailsync").click(function(e) {
         e.preventDefault();
         console.log("clicked")
@@ -189,7 +200,29 @@ Webcam management = selects which camera to Sync
         }
       })
     }
-
+    function getQueuedMail() {
+      $.get("getQueued", function(getQueued) {
+        if (getQueued.includes("Error")) {
+          setTimeout(function() {
+            getFailedMail()
+          }, 1000)
+        } else {
+          let lines = getQueued.split('\n');
+          for (var ent = 1; ent < lines.length; ent++) {
+            $("#queuedentries").append("<tr><td>" + lines[ent].split(',')[1] + "</td><td>" + lines[ent].split(',')[2] + "</td><td><span value=" + lines[ent].split(',')[0] + " class='clickablemail'>" + lines[ent].split(',')[0] + "</span></td></tr>")
+          }
+          $(".clickablemail").click(function(e) {
+            e.preventDefault();
+            $.get("getQueueddMail?mailname="+e.target.innerHTML, function(retQueuedMail) {
+              //$(".failedmailcontent").html("<span>hello</span>")
+              $(".queuedmailcontent").html(retQueuedMail.textAsHtml)
+              console.log(retFailedMail)
+            })
+            console.log(e.target.innerHTML)
+          })
+        }
+      })
+    }
     function refreshSyncs() {
       $.get("getSyncs", function(getSyncs) {
         if (getSyncs.includes("Error")) {
@@ -231,7 +264,30 @@ Webcam management = selects which camera to Sync
       $.get("/set?network=" + network + "&gateway=" + gateway);
       drawLine(network)
     }
-
+    mapRouteToFirewall()
+    function mapRouteToFirewall(){
+      $.get("/getfirewallpolicy", function(fwdata) {
+        console.log("gotfw for mapping "+ fwdata)
+        if (typeof fwdata == "object") {
+          $.get("/getrouterpolicy", function(rdata) {
+            console.log("gotrouting for mapping")
+            for(var j = 0 ; j < networks.length ; j++ ){
+              console.log("mapping "+networks[j])
+              for(fwnr in fwdata){
+                if(fwdata[fwnr].name.includes(networks[j])){
+                  settings[fwdata[fwnr].name+"--fw"]=fwdata[fwnr].nr
+                }
+              }
+              for(rnr in rdata){
+                if(rdata[rnr].comments.includes(networks[j])){
+                  settings[rdata[rnr].comments+"--rp"]=rdata[rnr].nr
+                }
+              }
+            }
+          })
+        }
+      })
+    }
     function getNetworks() {
       //get firewallpolicy
       $.get("/getfirewallpolicy", function(currentfirewalldata) {
@@ -241,7 +297,7 @@ Webcam management = selects which camera to Sync
             for (var i = 0; i < networkdata.QNET.networks.length; i++) {
               for (var cur in currentfirewalldata) {
                 if (networkdata.QNET.networks[i].firewallpolicy == cur) {
-                  //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
+                  console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
                   if (currentfirewalldata[cur].status == undefined) {
                     $(".QNET").attr("gateway", networkdata.QNET.networks[i].name)
                     drawLine("QNET")
@@ -746,10 +802,11 @@ Webcam management = selects which camera to Sync
       Legacy CnC Functions
     </div><br>
     <div class="inner" style="">
+      <button style="flex: 1;" class="manualsync pure-button">Manual Sync</button><br>
       <button disabled style="flex: 1;" class="enableemailsync pure-button">Enable Mail Sync</button>
-      <button disabled style="flex: 1;" class="disableemailsync pure-button">Disable Mail Sync</button>
+      <button disabled style="flex: 1;" class="disableemailsync pure-button">Disable Mail Sync</button><br>
       <button disabled style="flex: 1;" class="enablewebcamsync pure-button">Enable Webcam Sync</button>
-      <button disabled style="flex: 1;" class="disablewebcamsync pure-button">Disable Webcam Sync</button>
+      <button disabled style="flex: 1;" class="disablewebcamsync pure-button">Disable Webcam Sync</button><br>
       <button disabled style="flex: 1;" class="enablenoonsync pure-button">Enable Noonreport Sync</button>
       <button disabled style="flex: 1;" class="disablenoonsync pure-button">Disable Noonreport Sync</button>
     </div>
@@ -783,6 +840,21 @@ Webcam management = selects which camera to Sync
 
         </tbody>
       </table>
+    </div>
+    <table style="margin-top:30px;width:580px;float:left">
+      <tr>
+        <thead>
+          <th style="width:100px">date</th>
+          <th style="width:50px">size</th>
+          <th>name</th>
+        </thead>
+        <tbody id="queuedentries">
+
+        </tbody>
+      </tr>
+    </table>
+    <div class="queuedmailcontent" style="float:left">
+
     </div>
   </fieldset>
 

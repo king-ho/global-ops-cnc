@@ -359,6 +359,19 @@ app.get('/syncwebcam', function(req, res) {
  * @param  {object} res Result object
  * @return {string}     String
  */
+app.get('/fw', function(req,res){
+  execdir = exec("ssh admin@192.168.214.254 'show route policy'", function(err, stdout, stderr) {
+    if(err){
+      res.send(err)
+    }
+    if(stderr){
+      res.send(stderr)
+    }
+    if(stdout){
+      res.send(stdout)
+    }
+  })
+})
 app.get('/getfirewallpolicy', function(req, res) {
   console.log("connecting to " + fgip + " as " + fguser)
   ssh.connect({
@@ -368,6 +381,7 @@ app.get('/getfirewallpolicy', function(req, res) {
   }).then(function() {
     console.log("successfully connected to fg. getting current configuration.")
     ssh.execCommand('show firewall policy').then(function(result) {
+      console.log("show firewall policy : "+JSON.stringify(result))
       let toret = extractPolicy(result.stdout)
       firewallpolicy = toret
       if (result.stderr)
@@ -551,6 +565,11 @@ app.get('/isAutosyncCronSet', async function(req, res) {
 })
 
 // Mail sync management
+app.get('/manualSync', async function(req, res) {
+  await doMailCommand("sh /gp/scripts/admin/do_sync.sh").then(function(qwe) {
+    res.send(qwe)
+  })
+})
 app.get('/genMailCron', async function(req, res) {
   await doMailCommand("touch /etc/cron.d/mailsync && echo '*/5 * * * * root /gp/scripts/aft/aft-client.sh ship2shore-email > /dev/null' >> /etc/cron.d/mailsync").then(function(qwe) {
     res.send(qwe)
@@ -609,8 +628,8 @@ app.get('/getSyncs', async function(req, res) {
 })
 
 // get Mail queues
-app.get('/getOutgoing', async function(req, res) {
-  await doMailCommand("ls -Alh /mail/xsmtp/messages/").then(function(qwe) {
+app.get('/getQueued', async function(req, res) {
+  await doMailCommand(`ls -Alh /mail/xsmtp/messages/| awk '{if(NR==1){print "FileName, ctime, Size, Access";}else{print  $9 "," $6 " " $7 " " $8 "," $5 "," $1;}}'`).then(function(qwe) {
     res.send(qwe)
   })
 })
@@ -619,10 +638,29 @@ app.get('/getFailed', async function(req, res) {
     res.send(qwe)
   })
 })
-
+app.get('/update'. function(rew,res){
+  dir = exec("cd /root/global-ops-cnc && git pull && forever restartall", function(err, stdout, stderr) {
+    if (err) {
+      console.log(err)
+      return err
+    }
+    if (stderr) {
+      console.log(stderr)
+      return stderr
+    }
+  });
+})
 app.get('/getFailedMail', async function(req, res) {
   let mailname = req.query.mailname
   await doMailCommand(`cat /mail/aft/messages/.failed/` + mailname).then(async function(qwe) {
+    let parsed = await simpleParser(qwe);
+    res.send(parsed)
+
+  })
+})
+app.get('/getQueuedMail', async function(req, res) {
+  let mailname = req.query.mailname
+  await doMailCommand(`cat /mail/xsmtp/messages/` + mailname).then(async function(qwe) {
     let parsed = await simpleParser(qwe);
     res.send(parsed)
 
