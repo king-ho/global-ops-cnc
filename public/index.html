@@ -103,6 +103,9 @@ Webcam management = selects which camera to Sync
         console.log("config clicked")
         $("#configwindow").fadeIn()
       })
+      $("#emailwindowclosebutton").click(function() {
+        $("#emailwindow").fadeOut()
+      })
       $("#configwindowclosebutton").click(function() {
         $("#configwindow").fadeOut()
       })
@@ -194,6 +197,9 @@ Webcam management = selects which camera to Sync
               //$(".failedmailcontent").html("<span>hello</span>")
               $(".failedmailcontent").html(retFailedMail.textAsHtml)
               console.log(retFailedMail)
+              $(".mailoverview").html("<div>Date: " + retFailedMail.date + "</div><div>From: " + retFailedMail.from.html + "</div><div>To: " + retFailedMail.to.html + "</div><div>Subject: " + retFailedMail.subject +
+                "</div><div>Attachments: " + retFailedMail.attachments.length + "</div>")
+                $("#emailwindow").fadeIn()
             })
             console.log(e.target.innerHTML)
           })
@@ -693,6 +699,14 @@ Webcam management = selects which camera to Sync
 </head>
 
 <body>
+  <div id="emailwindow" class="overlay fullwidth">
+    <div style="position:absolute;left:50%;top:50%;margin-top:20px;margin-left:-250px">
+      <div style="position:absolute;right:5px;top:5px"><i id="emailwindowclosebutton" style="font-size:20px;cursor:pointer" class="material-icons">close</i></div>
+      <div class="mailoverview" style="width:500px;">
+
+      </div>
+    </div>
+  </div>
   <div id="configwindow" class="overlay fullwidth">
     <div style="position:absolute;right:5px;top:5px"><i id="configwindowclosebutton" style="font-size:48px;cursor:pointer" class="material-icons">close</i></div>
     <div id="configdisplayer">
