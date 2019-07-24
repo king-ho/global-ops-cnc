@@ -194,7 +194,7 @@ let networks = {
  * @param  {object} res result object
  * @return {object}     object with network policy references
  */
- getInterfaces()
+ //getInterfaces()
  function getInterfaces(){
    dir = exec("/usr/sbin/ip route", function(err, stdout, stderr) {
      if (err) {
@@ -674,6 +674,7 @@ app.get('/getQueuedMail', async function(req, res) {
  * @return {type}  description
  */
 async function doMailCommand(command) {
+  console.log("localmailip"+localmailip + " | localmailuser "+ localmailuser)
   return new Promise(resolve => {
     ssh.connect({
       host: localmailip,
