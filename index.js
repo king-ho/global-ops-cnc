@@ -381,6 +381,7 @@ app.get('/getfirewallpolicy', function(req, res) {
   }).then(function() {
     console.log("successfully connected to fg. getting current configuration.")
     ssh.execCommand('show firewall policy').then(function(result) {
+      ssh.end()
       console.log("show firewall policy : "+JSON.stringify(result))
       let toret = extractPolicy(result.stdout)
       firewallpolicy = toret
@@ -388,10 +389,12 @@ app.get('/getfirewallpolicy', function(req, res) {
         console.log('STDERR: ' + result.stderr)
       res.send(toret)
     }).catch((error) => {
+      ssh.end()
       console.log("Error running show firewall policy: " + error)
       res.send("Error running show firewall policy: " + error)
     })
   }).catch((error) => {
+    ssh.end()
     console.log("Error connecting to fortigate")
     res.send("Error running show router policy")
   })
@@ -689,14 +692,17 @@ async function doMailCommand(command) {
     }).then(function() {
       console.log("Running " + command + " on " + localmailip)
       ssh.execCommand(command+" ; exit").then(function(result) {
+        ssh.end()
         if (result.stderr != '') {
           resolve('Error STDERR: ' + result.stderr)
         }
         resolve(result.stdout)
       }).catch((error) => {
+        ssh.end()
         resolve("Error running: " + command + " || " + error)
       })
     }).catch((error) => {
+      ssh.end()
       resolve("Error connecting to " + localmailip)
     })
   })
