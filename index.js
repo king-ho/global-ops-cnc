@@ -691,7 +691,7 @@ async function doMailCommand(command) {
       password: localmailpass
     }).then(function() {
       console.log("Running " + command + " on " + localmailip)
-      ssh.execCommand(command+" ; exit").then(function(result) {
+      ssh.execCommand(command+" ; exit", { stream: 'stdout', options: { pty: true } }).then(function(result) {
         ssh.end()
         if (result.stderr != '') {
           resolve('Error STDERR: ' + result.stderr)
