@@ -690,13 +690,17 @@ async function doMailCommand(command) {
       console.log("Running " + command + " on " + localmailip)
       ssh.execCommand(command+" ; exit", { stream: 'stdout', options: { pty: true } }).then(function(result) {
         if (result.stderr != '') {
+          ssh.dispose();
           resolve('Error STDERR: ' + result.stderr)
         }
+        ssh.dispose();
         resolve(result.stdout)
       }).catch((error) => {
+        ssh.dispose();
         resolve("Error running: " + command + " || " + error)
       })
     }).catch((error) => {
+      ssh.dispose();
       resolve("Error connecting to " + localmailip)
     })
   })
