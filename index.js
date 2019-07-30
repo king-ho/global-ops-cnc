@@ -638,6 +638,7 @@ app.get('/getFailed', async function(req, res) {
     res.send(qwe)
   })
 })
+
 app.get('/update', function(rew,res){
   dir = exec("cd /root/global-ops-cnc && git pull && forever restartall", function(err, stdout, stderr) {
     if (err) {
@@ -655,7 +656,7 @@ app.get('/getFailedMail', async function(req, res) {
   await doMailCommand(`cat /mail/aft/messages/.failed/` + mailname).then(async function(qwe) {
     let parsed = await simpleParser(qwe);
     res.send(parsed)
-
+    console.log(parsed)
   })
 })
 app.get('/getQueuedMail', async function(req, res) {
@@ -688,7 +689,7 @@ async function doMailCommand(command) {
       password: localmailpass
     }).then(function() {
       console.log("Running " + command + " on " + localmailip)
-      ssh.execCommand(command+" ; exit", { stream: 'stdout', options: { pty: true , readyTimeout : 1000} }).then(function(result) {
+      ssh.execCommand(command+" ; exit").then(function(result) {
         if (result.stderr != '') {
           ssh.dispose();
           resolve('Error STDERR: ' + result.stderr)

@@ -37,6 +37,7 @@ Webcam management = selects which camera to Sync
 
   <!-- Connect your elements like in this example -->
   <script>
+
     var svgContainer
     let networks
     let gateways
@@ -44,10 +45,19 @@ Webcam management = selects which camera to Sync
 
     jQuery(document).ready(function() {
       //refreshPings()
-      refreshSyncs()
+      setTimeout(function(){
+        refreshSyncs()
+      },100)
+
       //getCams()
-      getQueuedMail()
-      getFailedMail()
+      setTimeout(function(){
+        getQueuedMail()
+      },300)
+
+      setTimeout(function(){
+        getFailedMail()
+      },400)
+
       //getMem()
       $(".manualsync").click(function(e) {
         e.preventDefault();
@@ -189,6 +199,7 @@ Webcam management = selects which camera to Sync
         },4000)
     }
     function getFailedMail() {
+      $.ajaxSetup({timeout:1000});
       $.get("getFailed", function(getFailed) {
         if (getFailed.includes("Error")) {
           setTimeout(function() {
@@ -196,6 +207,7 @@ Webcam management = selects which camera to Sync
           }, 1000)
         } else {
           let lines = getFailed.split('\n');
+          $("#entries").html()
           for (var ent = 3; ent < lines.length; ent++) {
             $("#entries").append("<tr><td>" + lines[ent].split(',')[1] + "</td><td>" + lines[ent].split(',')[2] + "</td><td><span value=" + lines[ent].split(',')[0] + " class='clickablemail'>" + lines[ent].split(',')[0] + "</span></td></tr>")
           }
@@ -213,6 +225,9 @@ Webcam management = selects which camera to Sync
           })
         }
       })
+      setTimeout(function() {
+        //getFailedMail()
+      }, 3000)
     }
 
     function getQueuedMail() {
