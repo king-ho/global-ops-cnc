@@ -50,14 +50,14 @@ cat <<EOT >> /etc/motd
 ####################
 
 # Working directory:
-/root/global-ops-cnc
+/opt/global-ops-cnc
 
 # Application starts automatically with cronjob:
 crontab -e
-@reboot /usr/bin/forever --sourceDir /root/global-ops-cnc start index.js
+@reboot /usr/bin/forever --sourceDir /opt/global-ops-cnc start index.js
 
 # Updating
-cd /root/global-ops-cnc
+cd /opt/global-ops-cnc
 git pull https://github.com/king-ho/global-ops-cnc
 forever restartall
 
@@ -65,7 +65,7 @@ forever restartall
 forever list
 
 # Manually start:
-forever --sourceDir /root/global-ops-cnc start index.js
+forever --sourceDir /opt/global-ops-cnc start index.js
 
 # Manually stop:
 forever stopall
