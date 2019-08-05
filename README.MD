@@ -21,11 +21,11 @@ Unifying the control of ships networking, file-sharing, mail-curation, wifi-user
 11. generate privatekey on CnC without password `ssh-keygen`
 12. print out public-key to copy to fortigate `more /root/.ssh/id_rsa.pub`. Important: the " ssh-rsa" key is one linemake sure it is one line when you copy/paste to FortiGate. e.g.:
 ssh-rsa AAAAB3N...1KljpiH9aQ== root@here.local
-13. add this public single line string to fortigat by logging in via ssh then:
-    # config system admin
-    # edit admin
-    # set ssh-public-key1 "[value from more /root/.ssh/id_rsa.pub]"
-    # end
+13. add this public single line string to fortigate by logging in via ssh then:
+    - config system admin
+    - edit admin
+    - set ssh-public-key1 "[value from more /root/.ssh/id_rsa.pub]"
+    - end
 14. test connection `ssh admin@fortigate` and you shouldnt need to enter password to log in
 
 ### Usage:
@@ -40,3 +40,32 @@ In your browser navigate to whatever IP of the machine you are running on, or as
 ### Stopping the service / uninstalling
 1. `sudo forever-service delete cnc`
 2. `rm -r /opt/global-ops-cnc`
+
+### Suggested
+Run this to set MOTD to something useful:
+`cat <<EOT >> /etc/motd
+####################
+#### global-cnc ####
+####################
+
+# Working directory:
+/root/global-ops-cnc
+
+# Application starts automatically with cronjob:
+crontab -e
+@reboot /usr/bin/forever --sourceDir /root/global-ops-cnc start index.js
+
+# Updating
+cd /root/global-ops-cnc
+git pull https://github.com/king-ho/global-ops-cnc
+forever restartall
+
+# Check application status:
+forever list
+
+# Manually start:
+forever --sourceDir /root/global-ops-cnc start index.js
+
+# Manually stop:
+forever stopall
+EOT`
