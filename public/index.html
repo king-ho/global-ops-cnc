@@ -199,7 +199,7 @@ Webcam management = selects which camera to Sync
         },4000)
     }
     function getFailedMail() {
-      $.ajaxSetup({timeout:1000});
+      $.ajaxSetup({timeout:3000});
       $.get("getFailed", function(getFailed) {
         if (getFailed.includes("Error")) {
           setTimeout(function() {
