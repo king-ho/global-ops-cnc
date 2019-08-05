@@ -43,7 +43,8 @@ In your browser navigate to whatever IP of the machine you are running on, or as
 
 ### Suggested
 Run this to set MOTD to something useful:
-`cat <<EOT >> /etc/motd
+```
+cat <<EOT >> /etc/motd
 ####################
 #### global-cnc ####
 ####################
@@ -68,4 +69,5 @@ forever --sourceDir /root/global-ops-cnc start index.js
 
 # Manually stop:
 forever stopall
-EOT`
+EOT
+```
