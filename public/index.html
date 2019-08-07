@@ -43,6 +43,91 @@ Webcam management = selects which camera to Sync
     let gateways
     let target
 
+    let firewallstatic = {
+      "160": {
+        "nr": "160",
+        "name": "[QNET-to-VSAT_KU]",
+        "status": "disable",
+        "comments": "Enable this to use VSAT - QNET via VSAT"
+      },
+      "161": {
+        "nr": "161",
+        "name": "[QNET-to-VSAT_FX]",
+        "status": "disable",
+        "comments": "QNET-via-VSAT-FX"
+      },
+      "162": {
+        "nr": "162",
+        "name": "[QNET-to-3G]",
+        "status": "disable",
+        "comments": "Enable this to use 3G - QNET via 3G"
+      },
+      "163": {
+        "nr": "163",
+        "name": "[QNET-to-4G]",
+        "comments": "Enable this to use 4G - QNET via 4G"
+      },
+      "164": {
+        "nr": "164",
+        "name": "[QNET-to-FBB]",
+        "status": "disable",
+        "comments": "Enable this to use FBB - QNET via FBB"
+      },
+      "165": {
+        "nr": "165",
+        "name": "[QNET-to-VPN]",
+        "status": "disable",
+        "comments": "Enable this to access Internet via VPN"
+      },
+      "166": {
+        "nr": "166",
+        "name": "[QNET-to-WIFI]",
+        "status": "disable",
+        "comments": "Enable this to use WIFI - QNET via WIFI"
+      },
+      "180": {
+        "nr": "180",
+        "name": "[MEDIANET-to-VSAT_KU]",
+        "status": "disable",
+        "comments": "Enable this to use VSAT_KU - MEDIANET via VSAT"
+      },
+      "181": {
+        "nr": "181",
+        "name": "[MEDIANET-to-VSAT-FX]",
+        "comments": "Enable this to use VSAT - MEDIANET via VSAT-FX"
+      },
+      "182": {
+        "nr": "182",
+        "name": "[MEDIANET-to-3G]",
+        "status": "disable",
+        "comments": "Enable this to use VSAT - MEDIANET via 3G"
+      },
+      "183": {
+        "nr": "183",
+        "name": "[MEDIANET-to-4G]",
+        "status": "disable",
+        "comments": "Enable this to use 4G - MEDIANET via 4G"
+      },
+      "184": {
+        "nr": "184",
+        "name": "[MEDIANET-to-FBB]",
+        "status": "disable",
+        "comments": "Enable this to use VSAT - MEDIANET via FBB"
+      },
+      "185": {
+        "nr": "185",
+        "name": "[MEDIANET-to-VPN]",
+        "status": "disable",
+        "comments": "Enable this to access Internet via VPN"
+      },
+      "186": {
+        "nr": "186",
+        "name": "[MEDIANET-to-WIFI]",
+        "status": "disable",
+        "comments": "Enable this to use VSAT - MEDIANET via FBB"
+      }
+    }
+
     jQuery(document).ready(function() {
       //refreshPings()
       setTimeout(function(){
@@ -199,7 +284,7 @@ Webcam management = selects which camera to Sync
         },4000)
     }
     function getFailedMail() {
-      $.ajaxSetup({timeout:3000});
+      //$.ajaxSetup({timeout:5000});
       $.get("getFailed", function(getFailed) {
         if (getFailed.includes("Error")) {
           setTimeout(function() {
@@ -235,7 +320,7 @@ Webcam management = selects which camera to Sync
         if (getQueued.includes("Error")) {
           setTimeout(function() {
             getQueuedMail()
-          }, 1000)
+          }, 3000)
         } else {
           let lines = getQueued.split('\n');
           for (var ent = 1; ent < lines.length; ent++) {
@@ -255,8 +340,8 @@ Webcam management = selects which camera to Sync
       })
     }
 
-    function refreshSyncs() {
-      $.get("/getSyncs", function(getSyncs) {
+    async function refreshSyncs() {
+      await $.get("/getSyncs", function(getSyncs) {
         if (getSyncs.includes("Error")) {
           console.log("cannot update syncs")
         } else {
@@ -282,12 +367,13 @@ Webcam management = selects which camera to Sync
             $(".disablewebcamsync").attr("disabled", true)
           }
         }
+        setTimeout(function() {
+          refreshSyncs()
+        }, 3000)
 
       })
 
-      setTimeout(function() {
-        refreshSyncs()
-      }, 3000)
+
     }
 
     function connect(network, gateway) {
@@ -301,27 +387,28 @@ Webcam management = selects which camera to Sync
       //get firewallpolicy
       $.get("/getfirewallpolicy", function(currentfirewalldata) {
         if (typeof currentfirewalldata == "object") {
-          $.get("/networks", function(networkdata) {
-            console.log(currentfirewalldata)
-            for (var i = 0; i < networkdata.QNET.networks.length; i++) {
-              for (var cur in currentfirewalldata) {
-                if (networkdata.QNET.networks[i].firewallpolicy == cur) {
-                  //console.log("network firewallpolicy id for QNET " + networkdata.QNET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
-                  if (currentfirewalldata[cur].status == undefined) {
-                    $(".QNET").attr("gateway", networkdata.QNET.networks[i].name)
+          $.get("/getrouterpolicy", function(currentrouterdata) {
+            for (var i = 160 ; i < 167 ; i++) {
+              for (var cur in currentrouterdata) {
+                console.log("checking "+currentfirewalldata[i].name + " against "+ currentrouterdata[cur].comments)
+                if (currentfirewalldata[i].name.includes(currentrouterdata[cur].comments)) {
+                  console.log("network firewallpolicy id for QNET "+i+" with routerpolicy id "+currentrouterdata[cur].nr)
+                  if (currentfirewalldata[i].status == undefined) {
+                    $(".QNET").attr("gateway", currentrouterdata[cur].comments.replace("[","").replace("]","").split("-to-")[1])
                     drawLine("QNET")
                     $("#gwloader").html("")
                   }
                 }
               }
             }
-            for (var i = 0; i < networkdata.MEDIANET.networks.length; i++) {
-              for (var cur in currentfirewalldata) {
-                if (networkdata.MEDIANET.networks[i].firewallpolicy == cur) {
-                  //console.log("network firewallpolicy id for MEDIANET " + networkdata.MEDIANET.networks[i].firewallpolicy + " == "+ cur + " with status "+ currentfirewalldata[cur].status)
-                  if (currentfirewalldata[cur].status == undefined) {
-                    $(".MEDIANET").attr("gateway", networkdata.MEDIANET.networks[i].name)
-                    drawLine("MEDIANET")
+            for (var i = 180 ; i < 187 ; i++) {
+              for (var cur in currentrouterdata) {
+                if (currentfirewalldata[i].comments.includes(currentrouterdata[cur].comments)) {
+                  console.log("network firewallpolicy id for MEDIANET "+i+" with routerpolicy id "+currentrouterdata[cur].nr)
+                  if (currentfirewalldata[i].status == undefined) {
+                    $(".MEDIANET").attr("gateway", currentrouterdata[cur].comments.replace("[","").replace("]","").split("-to-")[1])
+                    drawLine("QNET")
+                    $("#gwloader").html("")
                   }
                 }
               }
@@ -332,7 +419,8 @@ Webcam management = selects which camera to Sync
           n = d.toISOString();
           addToNotification('error', 'Could not get firewall data', n,
             "Try to resolve by: <br>1) Reloading the page. <br>2) Ensuring you are on the same network as the fortigate (can you ping it?). <br>3) Contacting operations on skype chat group")
-          console.log("could not get current firewalldata")
+          console.log("could not get current firewalldata, retrying in 3000ms")
+          setTimeout(function(){getNetworks()},3000)
         }
       })
     }
@@ -753,7 +841,7 @@ Webcam management = selects which camera to Sync
     <a href="#mailscanner">mail</a>
     <a href="#gatewayfs">gateways</a>
   </div>
-  <fieldset id="gatewayfs" class="gatewayfs" hidden>
+  <fieldset id="gatewayfs" class="gatewayfs">
     <div class="fstitle">
       Gateway <span id="gwloader"> - loading</span>
     </div><br>
