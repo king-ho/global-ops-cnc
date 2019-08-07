@@ -389,13 +389,12 @@ function refreshFirewall(){
     ssh.execCommand('show firewall policy').then(function(result) {
       //console.log("show firewall policy : "+JSON.stringify(result))
       console.log("successful firewall policy update")
-      let toret = extractPolicy(result.stdout)
-      firewallpolicy = toret
       if (result.stderr){
         console.log('STDERR: ' + result.stderr)
         setTimeout(function(){refreshFirewall()},3000)
-        fp = toret
       } else {
+        let toret = extractPolicy(result.stdout)
+        firewallpolicy = toret
         setTimeout(function(){refreshRouter()},3000)
         fp = toret
       }
@@ -430,13 +429,12 @@ function refreshRouter(){
     password: fgpass
   }).then(function() {
     ssh.execCommand('show router policy').then(function(result) {
-      let toret = extractPolicy(result.stdout)
-      routerpolicy = toret
       if (result.stderr){
         console.log('STDERR: ' + result.stderr)
         setTimeout(function(){refreshRouter()},3000)
-        rp = toret
       } else {
+        let toret = extractPolicy(result.stdout)
+        routerpolicy = toret
         console.log("successful router policy update")
         setTimeout(function(){refreshFirewall()},3000)
         rp = toret
