@@ -386,7 +386,7 @@ Webcam management = selects which camera to Sync
 
     function connect(network, gateway) {
       console.log("connecting " + network + " to " + gateway)
-      $("." + network).attr("gateway", gateway)
+      $(".WAN-" + network).attr("gateway", gateway)
       $.get("/set?network=" + network + "&gateway=" + gateway);
       drawLine(network)
     }
@@ -427,6 +427,9 @@ Webcam management = selects which camera to Sync
                 }
               }
               currentstatus=currentfirewalldata
+              setTimeout(function() {
+                getNetworks()
+              }, 3000)
             } else {
               var d = new Date();
               n = d.toISOString();
