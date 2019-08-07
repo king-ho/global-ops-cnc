@@ -421,7 +421,6 @@ app.get('/getrouterpolicy', function(req, res) {
   res.send(rp)
 })
 
-setTimeout(function(){refreshRouter()},2000)
 function refreshRouter(){
   console.log("connecting to " + fgip + " as " + fguser)
   ssh.connect({
