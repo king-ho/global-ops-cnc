@@ -395,7 +395,7 @@ function refreshFirewall(){
         console.log('STDERR: ' + result.stderr)
         setTimeout(function(){refreshFirewall()},3000)
       } else {
-        setTimeout(function(){refreshFirewall()},3000)
+        setTimeout(function(){refreshRouter()},3000)
         fp = toret
       }
 
@@ -411,6 +411,48 @@ function refreshFirewall(){
     setTimeout(function(){refreshFirewall()},3000)
   })
 }
+/**
+ * [return router policy]
+ * @param  {object} req request object
+ * @param  {object} res result object
+ * @return {string}     String
+ */
+app.get('/getrouterpolicy', function(req, res) {
+  res.send(rp)
+})
+
+setTimeout(function(){refreshRouter()},2000)
+function refreshRouter(){
+  console.log("connecting to " + fgip + " as " + fguser)
+  ssh.connect({
+    host: fgip,
+    username: fguser,
+    password: fgpass
+  }).then(function() {
+    ssh.execCommand('show router policy').then(function(result) {
+      let toret = extractPolicy(result.stdout)
+      routerpolicy = toret
+      if (result.stderr){
+        console.log('STDERR: ' + result.stderr)
+        setTimeout(function(){refreshRouter()},3000)
+      } else {
+        console.log("successful router policy update")
+        setTimeout(function(){refreshFirewall()},3000)
+        rp = toret
+      }
+
+    }).catch((error) => {
+      console.log("Error running show router policy: " + error)
+      //res.send("Error running show router policy: " + error)
+      setTimeout(function(){refreshRouter()},3000)
+    })
+  }).catch((error) => {
+    console.log("Error connecting to fortigate " + error)
+    //res.send("Error connecting to fortigate " + error)
+    setTimeout(function(){refreshRouter()},3000)
+  })
+}
+
 app.get('/getinterfaces', function(req, res) {
   console.log("connecting to " + fgip + " as " + fguser)
   ssh.connect({
@@ -435,46 +477,7 @@ app.get('/getinterfaces', function(req, res) {
   })
 })
 
-/**
- * [return router policy]
- * @param  {object} req request object
- * @param  {object} res result object
- * @return {string}     String
- */
-app.get('/getrouterpolicy', function(req, res) {
-  res.send(rp)
-})
-setTimeout(function(){refreshRouter()},1000)
-function refreshRouter(){
-  console.log("connecting to " + fgip + " as " + fguser)
-  ssh.connect({
-    host: fgip,
-    username: fguser,
-    password: fgpass
-  }).then(function() {
-    ssh.execCommand('show router policy').then(function(result) {
-      let toret = extractPolicy(result.stdout)
-      routerpolicy = toret
-      if (result.stderr){
-        console.log('STDERR: ' + result.stderr)
-        setTimeout(function(){refreshRouter()},3000)
-      } else {
-        console.log("successful router policy update")
-        setTimeout(function(){refreshRouter()},3000)
-        rp = toret
-      }
 
-    }).catch((error) => {
-      console.log("Error running show router policy: " + error)
-      //res.send("Error running show router policy: " + error)
-      setTimeout(function(){refreshRouter()},3000)
-    })
-  }).catch((error) => {
-    console.log("Error connecting to fortigate " + error)
-    //res.send("Error connecting to fortigate " + error)
-    setTimeout(function(){refreshRouter()},3000)
-  })
-}
 app.get('/set', function(req, res) {
   let nw = networks[req.query.network]
   console.log(nw)
