@@ -37,11 +37,11 @@ Webcam management = selects which camera to Sync
 
   <!-- Connect your elements like in this example -->
   <script>
-
     var svgContainer
     let networks
     let gateways
     let target
+    let currentstatus
 
     let firewallstatic = {
       "160": {
@@ -130,18 +130,24 @@ Webcam management = selects which camera to Sync
 
     jQuery(document).ready(function() {
       //refreshPings()
-      setTimeout(function(){
+      setTimeout(function() {
         refreshSyncs()
-      },100)
+      }, 100)
 
       //getCams()
-      setTimeout(function(){
+      setTimeout(function() {
         getQueuedMail()
-      },500)
+      }, 300)
 
-      setTimeout(function(){
+      setTimeout(function() {
+        getNetworks()
+      }, 600)
+
+      setTimeout(function() {
         getFailedMail()
-      },900)
+      }, 900)
+
+
 
       //getMem()
       $(".manualsync").click(function(e) {
@@ -275,14 +281,16 @@ Webcam management = selects which camera to Sync
     function selectNetwork(gateway) {
       $(".gw").prop('disabled', false);
     }
-    function getMem(){
-        $.get("/getMem", function(getMem) {
-          $("#configdisplayer").html(getMem)
-        })
-        setTimeout(function(){
-          getMem()
-        },4000)
+
+    function getMem() {
+      $.get("/getMem", function(getMem) {
+        $("#configdisplayer").html(getMem)
+      })
+      setTimeout(function() {
+        getMem()
+      }, 4000)
     }
+
     function getFailedMail() {
       //$.ajaxSetup({timeout:5000});
       $.get("getFailed", function(getFailed) {
@@ -304,7 +312,7 @@ Webcam management = selects which camera to Sync
               console.log(retFailedMail)
               $(".mailoverview").html("<div>Date: " + retFailedMail.date + "</div><div>From: " + retFailedMail.from.html + "</div><div>To: " + retFailedMail.to.html + "</div><div>Subject: " + retFailedMail.subject +
                 "</div><div>Attachments: " + retFailedMail.attachments.length + "</div>")
-                $("#emailwindow").fadeIn()
+              $("#emailwindow").fadeIn()
             })
             console.log(e.target.innerHTML)
           })
@@ -388,30 +396,46 @@ Webcam management = selects which camera to Sync
       $.get("/getfirewallpolicy", function(currentfirewalldata) {
         if (typeof currentfirewalldata == "object") {
           $.get("/getrouterpolicy", function(currentrouterdata) {
-            for (var i = 160 ; i < 167 ; i++) {
-              for (var cur in currentrouterdata) {
-                console.log("checking "+currentfirewalldata[i].name + " against "+ currentrouterdata[cur].comments)
-                if (currentfirewalldata[i].name.includes(currentrouterdata[cur].comments)) {
-                  console.log("network firewallpolicy id for QNET "+i+" with routerpolicy id "+currentrouterdata[cur].nr)
-                  if (currentfirewalldata[i].status == undefined) {
-                    $(".QNET").attr("gateway", currentrouterdata[cur].comments.replace("[","").replace("]","").split("-to-")[1])
-                    drawLine("QNET")
-                    $("#gwloader").html("")
+            if (typeof currentrouterdata == "object") {
+              for (var i = 160; i < 167; i++) {
+                for (var cur in currentrouterdata) {
+                  //console.log("QNET : checking " + currentfirewalldata[i].name + " against " + currentrouterdata[cur].comments)
+                  if (currentfirewalldata[i].name.includes(currentrouterdata[cur].comments)) {
+                    currentfirewalldata[i].routerid=currentrouterdata[cur].nr
+                    console.log("QNET network firewallpolicy id is " + i + " with routerpolicy id " + currentrouterdata[cur].nr)
+                    if (currentfirewalldata[i].status == undefined) {
+                      console.log(currentfirewalldata[i].name +" is currently active on " + currentrouterdata[cur].comments)
+                      $(".QNET").attr("gateway", currentrouterdata[cur].comments.replace("[", "").replace("]", "").split("-to-")[1])
+                      drawLine("QNET")
+                      $("#gwloader").html("")
+                    }
                   }
                 }
               }
-            }
-            for (var i = 180 ; i < 187 ; i++) {
-              for (var cur in currentrouterdata) {
-                if (currentfirewalldata[i].comments.includes(currentrouterdata[cur].comments)) {
-                  console.log("network firewallpolicy id for MEDIANET "+i+" with routerpolicy id "+currentrouterdata[cur].nr)
-                  if (currentfirewalldata[i].status == undefined) {
-                    $(".MEDIANET").attr("gateway", currentrouterdata[cur].comments.replace("[","").replace("]","").split("-to-")[1])
-                    drawLine("QNET")
-                    $("#gwloader").html("")
+              for (var i = 180; i < 187; i++) {
+                for (var cur in currentrouterdata) {
+                  //console.log("MEDIANET : checking " + currentfirewalldata[i].name + " against " + currentrouterdata[cur].comments)
+                  if (currentfirewalldata[i].comments.includes(currentrouterdata[cur].comments)) {
+                    currentfirewalldata[i].routerid=currentrouterdata[cur].nr
+                    console.log("MEDIANET network firewallpolicy is " + i + " with routerpolicy id " + currentrouterdata[cur].nr)
+                    if (currentfirewalldata[i].status == undefined) {
+                      $(".MEDIANET").attr("gateway", currentrouterdata[cur].comments.replace("[", "").replace("]", "").split("-to-")[1])
+                      drawLine("QNET")
+                      $("#gwloader").html("")
+                    }
                   }
                 }
               }
+              currentstatus=currentfirewalldata
+            } else {
+              var d = new Date();
+              n = d.toISOString();
+              addToNotification('error', 'Could not get router data', n,
+                "Try to resolve by: <br>1) Reloading the page. <br>2) Ensuring you are on the same network as the fortigate (can you ping it?). <br>3) Contacting operations on skype chat group")
+              console.log("could not get current router, retrying in 3000ms")
+              setTimeout(function() {
+                getNetworks()
+              }, 3000)
             }
           })
         } else {
@@ -420,7 +444,9 @@ Webcam management = selects which camera to Sync
           addToNotification('error', 'Could not get firewall data', n,
             "Try to resolve by: <br>1) Reloading the page. <br>2) Ensuring you are on the same network as the fortigate (can you ping it?). <br>3) Contacting operations on skype chat group")
           console.log("could not get current firewalldata, retrying in 3000ms")
-          setTimeout(function(){getNetworks()},3000)
+          setTimeout(function() {
+            getNetworks()
+          }, 3000)
         }
       })
     }
@@ -433,8 +459,8 @@ Webcam management = selects which camera to Sync
         var line = svgContainer.append("line")
           .attr("x1", $("." + network).offset().left + $("." + network).width() / 2 + 20)
           .attr("y1", $("." + network).offset().top + $("." + network).height() + 20)
-          .attr("x2", $("." + gateway).offset().left + $("." + gateway).width() / 2 + 20)
-          .attr("y2", $("." + gateway).offset().top)
+          .attr("x2", $(".WAN-" + gateway).offset().left + $("." + gateway).width() / 2 + 20)
+          .attr("y2", $(".WAN-" + gateway).offset().top)
           .attr("stroke-width", 2)
           .attr("stroke", "black")
           .attr("class", network + "_line lern")
@@ -902,7 +928,10 @@ Webcam management = selects which camera to Sync
       <img id="webcam2" style="width:50%; display: block;margin-left: auto;margin-right: auto; margin-bottom:20px" src="" alt="">
     </div>
   </fieldset>
-  <fieldset id="legacy" class="fiddy" style="margin-top:58px">
+  <fieldset id="" class="fiddy" style="display:none">
+
+  </fieldset>
+  <fieldset id="legacy" class="fiddy">
     <div class="fstitle">
       Sync Functions
     </div><br>
