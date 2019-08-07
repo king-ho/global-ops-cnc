@@ -394,6 +394,7 @@ function refreshFirewall(){
       if (result.stderr){
         console.log('STDERR: ' + result.stderr)
         setTimeout(function(){refreshFirewall()},3000)
+        fp = toret
       } else {
         setTimeout(function(){refreshRouter()},3000)
         fp = toret
@@ -434,6 +435,7 @@ function refreshRouter(){
       if (result.stderr){
         console.log('STDERR: ' + result.stderr)
         setTimeout(function(){refreshRouter()},3000)
+        rp = toret
       } else {
         console.log("successful router policy update")
         setTimeout(function(){refreshFirewall()},3000)
